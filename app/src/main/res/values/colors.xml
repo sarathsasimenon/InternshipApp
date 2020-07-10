@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#040C42</color>
+    <color name="btn">#3F51B5</color>
+    <color name="dropdown">#D0D0D3</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="signin">#FFFFFF</color>
+</resources>

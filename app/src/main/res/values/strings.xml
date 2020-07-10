@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">App</string>
+    <string name="hello">Hello</string>
+    <string name="name">Sarath Menon</string>
+    <string name="choose">Choose your destination</string>
+    <string-array name="clientlist">
+        <item>Choose a client and respective order id</item>
+        <item>Xyz - 54623</item>
+        <item>Xyz - 23457</item>
+        <item>Abc - 12347</item>
+        <item>Efg - 85612</item>
+        <item>Abc - 57965</item>
+        <item>Wqr - 98746</item>
+        <item>Back Home</item>
+    </string-array>
+    <string name="client">Client Name:</string>
+    <string name="oid">Order ID:</string>
+    <string name="location">Location:</string>
+    <string name="start">Start Journey</string>
+    <string name="end">End Journey</string>
+    <string name="todo">TODO</string>
+    <string name="username">Enter username</string>
+    <string name="password">Enter password</string>
+    <string name="login">Login</string>
+</resources>
