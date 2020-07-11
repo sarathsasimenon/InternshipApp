@@ -22,4 +22,5 @@
     <string name="username">Enter username</string>
     <string name="password">Enter password</string>
     <string name="login">Login</string>
+    <string name="url">http://35.240.205.55/web/session/authenticate/</string>
 </resources>
