@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +39,9 @@ public class item_select extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
     public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
+    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
+    public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
+    public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
 
     private ArrayList permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
@@ -48,6 +53,16 @@ public class item_select extends AppCompatActivity {
     LocationTrack locationTrack;
 
     private Button btnStart;
+
+    String time1;
+
+    double longitude;
+    double latitude;
+
+    String id;
+    String lat;
+    String longi;
+    int result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +83,19 @@ public class item_select extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final long m = time();
+        Date date = new Date();
+        Timestamp timestamp1 = new Timestamp(date.getTime());
+        final long m = timestamp1.getTime();
+        time1 = time(m);
+        System.out.println(time1);
 
         final Intent intent = getIntent();
         final String client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
         final String oid = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
+        id = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
 
         TextView cl = (TextView) findViewById(R.id.cl);
-        TextView order = (TextView) findViewById(R.id.order);
+        final TextView order = (TextView) findViewById(R.id.order);
 
         cl.setText(client);
         order.setText(oid);
@@ -84,33 +104,37 @@ public class item_select extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postData(requestQueue);
-                /*locationTrack = new LocationTrack(item_select.this);
+                locationTrack = new LocationTrack(item_select.this);
                 if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    System.out.println(longitude);
-                    System.out.println(latitude);
+                    longitude = locationTrack.getLongitude();
+                    latitude = locationTrack.getLatitude();
+                    lat = Double.toString(latitude);
+                    longi = Double.toString(longitude);
+                    /*System.out.println(longitude);
+                    System.out.println(latitude);*/
                 }
                 else {
                     locationTrack.showSettingsAlert();
-                }*/
+                }
+                postData(requestQueue);
+
                 final Intent intent1 = new Intent(item_select.this, stop_journey.class);
                 intent1.putExtra(EXTRA_TEXT, client);
                 intent1.putExtra(EXTRA_TEXT2, oid);
                 intent1.putExtra(EXTRA_TEXT3, m);
+                intent1.putExtra(EXTRA_TEXT4,latitude);
+                intent1.putExtra(EXTRA_TEXT5,longitude);
+                intent1.putExtra(EXTRA_TEXT6,result);
                 startActivity(intent1);
                 overridePendingTransition(0, 0);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }
         });
     }
-
-    public long time() {
-        Date date = new Date();
-        Timestamp timestamp1 = new Timestamp(date.getTime());
-        long milli = timestamp1.getTime();
-        return milli;
+    public String time(long milliseconds) {
+        Date currentDate = new Date(milliseconds);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return df.format(currentDate);
     }
     public void postData(RequestQueue requestQueue) {
         JSONObject object = null;
@@ -125,16 +149,22 @@ public class item_select extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        locationTrack = new LocationTrack(item_select.this);
+                        /*locationTrack = new LocationTrack(item_select.this);
                         System.out.println(response);
                         if (locationTrack.canGetLocation()) {
-                            double longitude = locationTrack.getLongitude();
-                            double latitude = locationTrack.getLatitude();
-                            System.out.println(latitude);
-                            System.out.println(longitude);
+                            longitude = locationTrack.getLongitude();
+                            latitude = locationTrack.getLatitude();
+                            *//*System.out.println(latitude);
+                            System.out.println(longitude);*//*
                         }
                         else{
                             locationTrack.showSettingsAlert();
+                        }*/
+                        System.out.println(response);
+                        try {
+                            result = (int) response.get("result");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 },
@@ -160,17 +190,29 @@ public class item_select extends AppCompatActivity {
     }
 
     public JSONObject jsonCreate() throws JSONException {
+        JSONObject objc = new JSONObject();
+        objc.put("id",15);
+        objc.put("action",179);
+        objc.put("model","hr.attendance");
+        objc.put("view_type","form");
+        objc.put("menu_id",141);
         JSONObject jsobj = new JSONObject();
         jsobj.put("lang","en_US");
-        jsobj.put("tz",false);
+        jsobj.put("tz","Asia/Kolkata");
         jsobj.put("uid",2);
+        jsobj.put("params",objc);
         jsobj.put("search_default_today",1);
         JSONObject jso = new JSONObject();
         jso.put("context",jsobj);
         JSONObject jo = new JSONObject();
-        jo.put("employee_id",1);
-        jo.put("check_in","2020-07-11 14:59:00");
-        jo.put("check_out","false");
+        jo.put("employee_id",id);
+        jo.put("check_in",time1);
+        jo.put("check_out",false);
+        jo.put("x_check_in_lat",lat);
+        jo.put("x_check_in_long",longi);
+        jo.put("x_check_out_lat",false);
+        jo.put("x_check_out_long",false);
+        jo.put("x_distance",0);
         JSONArray arr = new JSONArray();
         arr.put(jo);
         JSONObject obj = new JSONObject();
@@ -182,7 +224,7 @@ public class item_select extends AppCompatActivity {
         ob.put("jsonrpc","2.0");
         ob.put("method","call");
         ob.put("params",obj);
-        ob.put("id",847517371);
+        ob.put("id",753438469);
         System.out.println(ob);
         return ob;
     }

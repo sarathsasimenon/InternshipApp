@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +49,16 @@ public class stop_journey extends AppCompatActivity {
 
     private Button btnEnd;
 
+    String time2;
+
+    double longi2;
+    double lat2;
+
+    String dist;
+    String lat;
+    String longi;
+    int result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +76,19 @@ public class stop_journey extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
+        Date date = new Date();
+        Timestamp timestamp2 = new Timestamp(date.getTime());
+        final long m = timestamp2.getTime();
+        time2 = time(m);
+        System.out.println(time2);
+
         Intent intent = getIntent();
         final String client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
         final String oid = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
         final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
+        final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
+        final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
+        result = intent.getIntExtra(item_select.EXTRA_TEXT6,0);
 
         TextView cl = (TextView) findViewById(R.id.cl);
         TextView order = (TextView) findViewById(R.id.order);
@@ -79,19 +100,21 @@ public class stop_journey extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postData(requestQueue);
-                /*System.out.println(timer(milli));*/
-
-                /*locationTrack = new LocationTrack(stop_journey.this);
+                locationTrack = new LocationTrack(stop_journey.this);
                 if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    *//*System.out.println(longitude);
-                    System.out.println(latitude);*//*
+                    longi2 = locationTrack.getLongitude();
+                    lat2 = locationTrack.getLatitude();
+                    lat = Double.toString(lat2);
+                    longi = Double.toString(longi2);
+
+                    dist = distance(lat1,lat2,longi1,longi2);
                 }
                 else {
                     locationTrack.showSettingsAlert();
-                }*/
+                }
+                postData(requestQueue);
+                /*System.out.println(timer(milli));*/
+
                 final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
                 /*intent1.putExtra(EXTRA_TEXT, client);
                 intent1.putExtra(EXTRA_TEXT2, oid);*/
@@ -102,7 +125,6 @@ public class stop_journey extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-
         new AlertDialog.Builder(stop_journey.this)
                 .setTitle("Journey still in progress")
                 .setMessage("This will end the app. Use the home button instead.")
@@ -114,6 +136,11 @@ public class stop_journey extends AppCompatActivity {
                 }).show();
 
     }
+    public String time(long milliseconds) {
+        Date currentDate = new Date(milliseconds);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return df.format(currentDate);
+    }
     public static String timer(long milli){
         final Date date = new Date();
         Timestamp timestamp2 = new Timestamp(date.getTime());
@@ -122,6 +149,26 @@ public class stop_journey extends AppCompatActivity {
         int min = (int) ((m / (1000*60)) % 60);
         int h   = (int) ((m / (1000*60*60)) % 24);
         return String.format("%02d:%02d:%02d", h,min,s);
+    }
+    public String distance(double lat1,double lat2,double long1,double long2){
+        if((lat1==lat2) && (long1==long2)){
+            return ("0.0 KM");
+        }
+        else{
+            double theta = long1 - long2;
+            double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+            dist = Math.acos(dist);
+            dist = rad2deg(dist);
+            dist = dist * 60 * 1.1515;
+            dist = dist * 1.609344;
+            return(dist + " KM");
+        }
+    }
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
     public void postData(RequestQueue requestQueue) {
@@ -138,7 +185,7 @@ public class stop_journey extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response);
-                        locationTrack = new LocationTrack(stop_journey.this);
+                        /*locationTrack = new LocationTrack(stop_journey.this);
                         if (locationTrack.canGetLocation()) {
                             double longitude = locationTrack.getLongitude();
                             double latitude = locationTrack.getLatitude();
@@ -147,7 +194,7 @@ public class stop_journey extends AppCompatActivity {
                         }
                         else{
                             locationTrack.showSettingsAlert();
-                        }
+                        }*/
                     }
                 },
                 new Response.ErrorListener() {
@@ -172,17 +219,27 @@ public class stop_journey extends AppCompatActivity {
     }
 
     public JSONObject jsonCreate() throws JSONException {
+        JSONObject objc = new JSONObject();
+        objc.put("id",15);
+        objc.put("action",179);
+        objc.put("model","hr.attendance");
+        objc.put("view_type","form");
+        objc.put("menu_id",141);
         JSONObject jsobj = new JSONObject();
         jsobj.put("lang","en_US");
-        jsobj.put("tz",false);
+        jsobj.put("tz","Asia/Kolkata");
         jsobj.put("uid",2);
+        jsobj.put("params",objc);
         jsobj.put("search_default_today",1);
         JSONObject jso = new JSONObject();
         jso.put("context",jsobj);
         JSONObject jo = new JSONObject();
-        jo.put("check_out","2020-07-11 15:00:24");
+        jo.put("check_out",time2);
+        jo.put("x_check_out_lat",lat);
+        jo.put("x_check_out_long",longi);
+        jo.put("x_distance_km",dist);
         JSONArray ar = new JSONArray();
-        ar.put(1);
+        ar.put(result);
         JSONArray arr = new JSONArray();
         arr.put(ar);
         arr.put(jo);
@@ -195,7 +252,7 @@ public class stop_journey extends AppCompatActivity {
         ob.put("jsonrpc","2.0");
         ob.put("method","call");
         ob.put("params",obj);
-        ob.put("id",271571594);
+        ob.put("id",329478684);
         System.out.println(ob);
         return ob;
     }

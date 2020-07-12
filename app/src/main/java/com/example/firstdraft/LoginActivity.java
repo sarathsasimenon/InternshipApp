@@ -89,8 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if(k.equals("result")) {
-                            /*Log.d("Response", "response");
-                            System.out.println(response);*/
+                            /*Log.d("Response", "response");*/
+                            System.out.println(response);
                             Toast.makeText(getApplicationContext(), "Logging In", Toast.LENGTH_SHORT).show();
                             openDashboard();
                         }

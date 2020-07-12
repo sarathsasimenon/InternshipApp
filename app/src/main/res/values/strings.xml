@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">Deceler Vibrotek</string>
     <string name="hello">Hello</string>
     <string name="name">Sarath Menon</string>
     <string name="choose">Choose your destination</string>
@@ -24,6 +24,8 @@
     <string name="login">Login</string>
     <string name="url">http://35.240.205.55/web/session/authenticate/</string>
     <string name="url2">http://35.240.205.55/web/dataset/search_read</string>
+    <string name="nameurl">http://35.240.205.55/web/dataset/call_kw/hr.employee/search_read</string>
     <string name="url3">http://35.240.205.55/web/dataset/call_kw/hr.attendance/create</string>
     <string name="url4">http://35.240.205.55/web/dataset/call_kw/hr.attendance/write</string>
+    <string name="tz">Asia/Kolkata</string>
 </resources>
