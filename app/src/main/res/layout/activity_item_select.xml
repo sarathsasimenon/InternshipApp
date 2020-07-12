@@ -250,6 +250,25 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="163dp"
+            android:layout_marginTop="139dp"
+            android:layout_marginEnd="251dp"
+            android:layout_marginBottom="384dp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
         <Button
             android:id="@+id/btnStart"
             android:layout_width="145dp"
@@ -291,7 +310,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
-        <fragment
+        <!--<fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="330dp"
@@ -300,7 +319,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints" />-->
+
         <!--<com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="330dp"

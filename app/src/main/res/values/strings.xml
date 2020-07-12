@@ -23,4 +23,7 @@
     <string name="password">Enter password</string>
     <string name="login">Login</string>
     <string name="url">http://35.240.205.55/web/session/authenticate/</string>
+    <string name="url2">http://35.240.205.55/web/dataset/search_read</string>
+    <string name="url3">http://35.240.205.55/web/dataset/call_kw/hr.attendance/create</string>
+    <string name="url4">http://35.240.205.55/web/dataset/call_kw/hr.attendance/write</string>
 </resources>

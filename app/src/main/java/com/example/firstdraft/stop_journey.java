@@ -13,20 +13,32 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class stop_journey extends AppCompatActivity {
-    /*public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
-    public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";*/
-
     private ArrayList permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
     private ArrayList permissions = new ArrayList();
+
+    RequestQueue requestQueue;
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
@@ -39,6 +51,8 @@ public class stop_journey extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_journey);
+
+        requestQueue = Volley.newRequestQueue(stop_journey.this);
 
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
@@ -65,18 +79,19 @@ public class stop_journey extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                postData(requestQueue);
                 /*System.out.println(timer(milli));*/
 
-                locationTrack = new LocationTrack(stop_journey.this);
+                /*locationTrack = new LocationTrack(stop_journey.this);
                 if (locationTrack.canGetLocation()) {
                     double longitude = locationTrack.getLongitude();
                     double latitude = locationTrack.getLatitude();
-                    /*System.out.println(longitude);
-                    System.out.println(latitude);*/
+                    *//*System.out.println(longitude);
+                    System.out.println(latitude);*//*
                 }
                 else {
                     locationTrack.showSettingsAlert();
-                }
+                }*/
                 final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
                 /*intent1.putExtra(EXTRA_TEXT, client);
                 intent1.putExtra(EXTRA_TEXT2, oid);*/
@@ -107,6 +122,82 @@ public class stop_journey extends AppCompatActivity {
         int min = (int) ((m / (1000*60)) % 60);
         int h   = (int) ((m / (1000*60*60)) % 24);
         return String.format("%02d:%02d:%02d", h,min,s);
+    }
+
+    public void postData(RequestQueue requestQueue) {
+        JSONObject object = null;
+        try {
+            object = jsonCreate();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = getResources().getString(R.string.url3);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                        locationTrack = new LocationTrack(stop_journey.this);
+                        if (locationTrack.canGetLocation()) {
+                            double longitude = locationTrack.getLongitude();
+                            double latitude = locationTrack.getLatitude();
+                            System.out.println(latitude);
+                            System.out.println(longitude);
+                        }
+                        else{
+                            locationTrack.showSettingsAlert();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public JSONObject jsonCreate() throws JSONException {
+        JSONObject jsobj = new JSONObject();
+        jsobj.put("lang","en_US");
+        jsobj.put("tz",false);
+        jsobj.put("uid",2);
+        jsobj.put("search_default_today",1);
+        JSONObject jso = new JSONObject();
+        jso.put("context",jsobj);
+        JSONObject jo = new JSONObject();
+        jo.put("check_out","2020-07-11 15:00:24");
+        JSONArray ar = new JSONArray();
+        ar.put(1);
+        JSONArray arr = new JSONArray();
+        arr.put(ar);
+        arr.put(jo);
+        JSONObject obj = new JSONObject();
+        obj.put("args",arr);
+        obj.put("model","hr.attendance");
+        obj.put("method","write");
+        obj.put("kwargs",jso);
+        JSONObject ob = new JSONObject();
+        ob.put("jsonrpc","2.0");
+        ob.put("method","call");
+        ob.put("params",obj);
+        ob.put("id",271571594);
+        System.out.println(ob);
+        return ob;
     }
 
     private ArrayList findUnAskedPermissions(ArrayList wanted) {
