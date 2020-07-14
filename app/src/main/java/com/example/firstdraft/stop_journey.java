@@ -13,11 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -29,8 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -49,6 +43,9 @@ public class stop_journey extends AppCompatActivity {
 
     private Button btnEnd;
 
+    String client;
+    String add;
+    /*String oid;*/
     String time2;
 
     double longi2;
@@ -58,6 +55,10 @@ public class stop_journey extends AppCompatActivity {
     String lat;
     String longi;
     int result;
+
+    TextView cl;
+    TextView address;
+    /*TextView order;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +84,20 @@ public class stop_journey extends AppCompatActivity {
         System.out.println(time2);
 
         Intent intent = getIntent();
-        final String client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
-        final String oid = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
+        client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
+        add = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
         final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
         final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
         final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
         result = intent.getIntExtra(item_select.EXTRA_TEXT6,0);
 
-        TextView cl = (TextView) findViewById(R.id.cl);
-        TextView order = (TextView) findViewById(R.id.order);
+        cl = (TextView) findViewById(R.id.cl);
+        /*order = (TextView) findViewById(R.id.order);*/
+        address = (TextView) findViewById(R.id.address);
 
         cl.setText(client);
-        order.setText(oid);
+        /*order.setText(oid);*/
+        address.setText(add);
 
         btnEnd = (Button) this.findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +115,7 @@ public class stop_journey extends AppCompatActivity {
                 else {
                     locationTrack.showSettingsAlert();
                 }
-                postData(requestQueue);
+                /*postData(requestQueue);*/
                 /*System.out.println(timer(milli));*/
 
                 final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
@@ -136,6 +139,21 @@ public class stop_journey extends AppCompatActivity {
                 }).show();
 
     }
+   /* @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("client",client);
+        savedInstanceState.putString("oid",oid);
+    }
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        String client = savedInstanceState.getString("client");
+        String oid = savedInstanceState.getString("oid");
+        cl.setText(client);
+        order.setText(oid);
+    }*/
+
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -171,7 +189,7 @@ public class stop_journey extends AppCompatActivity {
         return (rad * 180.0 / Math.PI);
     }
 
-    public void postData(RequestQueue requestQueue) {
+    /*public void postData(RequestQueue requestQueue) {
         JSONObject object = null;
         try {
             object = jsonCreate();
@@ -185,7 +203,7 @@ public class stop_journey extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response);
-                        /*locationTrack = new LocationTrack(stop_journey.this);
+                        *//*locationTrack = new LocationTrack(stop_journey.this);
                         if (locationTrack.canGetLocation()) {
                             double longitude = locationTrack.getLongitude();
                             double latitude = locationTrack.getLatitude();
@@ -194,7 +212,7 @@ public class stop_journey extends AppCompatActivity {
                         }
                         else{
                             locationTrack.showSettingsAlert();
-                        }*/
+                        }*//*
                     }
                 },
                 new Response.ErrorListener() {
@@ -216,7 +234,7 @@ public class stop_journey extends AppCompatActivity {
             }
         };
         requestQueue.add(jsonObjectRequest);
-    }
+    }*/
 
     public JSONObject jsonCreate() throws JSONException {
         JSONObject objc = new JSONObject();

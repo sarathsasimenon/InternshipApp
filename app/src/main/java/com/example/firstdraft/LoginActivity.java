@@ -58,26 +58,21 @@ public class LoginActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
     public void postData(RequestQueue requestQueue){
+        JSONObject objc = new JSONObject();
         JSONObject object = new JSONObject();
         try {
-            object.put("db", "bitnami_odoo");
-            object.put("login",u);
-            object.put("password", p);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JSONObject objc = new JSONObject();
-        try {
-            objc.put("params", object);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        /*System.out.println(objc);*/
+            objc.put("db", "bitnami_odoo");
+            objc.put("login",u);
+            objc.put("password", p);
 
-        String url = getResources().getString(R.string.url);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, objc,
+            object.put("params", objc);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = getResources().getString(R.string.loginurl);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -89,8 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if(k.equals("result")) {
-                            /*Log.d("Response", "response");*/
-                            System.out.println(response);
+                            /*System.out.println(response);*/
                             Toast.makeText(getApplicationContext(), "Logging In", Toast.LENGTH_SHORT).show();
                             openDashboard();
                         }
@@ -102,8 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        /*Log.d("Error.Response", "no response");
-                        System.out.println(error);*/
+                        System.out.println(error);
                         Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
                     }
             }) {
@@ -111,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
             public Map<String,String> getHeaders() {
                 HashMap<String,String> headers = new HashMap<String,String>();
                 headers.put("Content-Type", "application/json");
-                /*System.out.println(headers);*/
                 return headers;
             }
             @Override

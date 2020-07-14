@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     String user;
 
     RequestQueue requestQueue;
+    /*RequestQueue requestQueue1;
+    RequestQueue requestQueue2;
+    RequestQueue requestQueue3;*/
 
     private Spinner dropdown;
 
@@ -42,8 +45,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
+
         postData(requestQueue);
 
+        /*requestQueue1 = Volley.newRequestQueue(MainActivity.this);
+        requestQueue2 = Volley.newRequestQueue(MainActivity.this);
+
+        postData1(requestQueue1);
+        postData2(requestQueue2);
+*/
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(user);
 
@@ -52,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.clientlist));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdown.setAdapter(adapter);
+
+        /*requestQueue3 = Volley.newRequestQueue(MainActivity.this);
+
+        postData3(requestQueue3);*/
 
         final String[] al = getResources().getStringArray(R.array.clientlist);
 
@@ -62,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     //do nothing
                 } else {
                     String s = parent.getItemAtPosition(position).toString();
-                    if (s.equals("Back Home")) {
+                    if(s.equals("Back Home")) {
                         Intent intent1 = new Intent(MainActivity.this, back_home.class);
                         startActivity(intent1);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -81,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
@@ -95,11 +108,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = getResources().getString(R.string.nameurl);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+        System.out.println(object);
+        String nameurl = getResources().getString(R.string.nameurl);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, nameurl, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        System.out.println("test1");
                         System.out.println(response);
                         try {
                             JSONArray arr = response.getJSONArray("result");
@@ -113,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        System.out.println("test2");
                         System.out.println(error);
                     }
                 }) {
@@ -129,6 +145,152 @@ public class MainActivity extends AppCompatActivity {
         };
         requestQueue.add(jsonObjectRequest);
     }
+/*
+
+    public void postData1(RequestQueue requestQueue) {
+        String url1 = getResources().getString(R.string.loginurl);
+        JSONObject object = new JSONObject();
+        JSONObject objc = new JSONObject();
+        try {
+            object.put("db", "bitnami_odoo");
+            object.put("login","user@example.com");
+            object.put("password", "user@123");
+            objc.put("params", object);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url1, objc,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                        JSONArray key = response.names();
+                        String k = null;
+                        try {
+                            k = key.getString(2);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(k.equals("result")) {
+                            System.out.println("test1");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("test2");
+                        System.out.println(error);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+
+    }
+    public void postData2(RequestQueue requestQueue) {
+        JSONObject object = null;
+        try {
+            object = jsonCreate();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = getResources().getString(R.string.nameurl);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("test3");
+                        System.out.println(response);
+                        try {
+                            JSONArray arr = response.getJSONArray("result");
+                            id = arr.getJSONObject(0).getString("id");
+                            user = arr.getJSONObject(1).getString("name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("test4");
+                        System.out.println(error);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void postData3(RequestQueue requestQueue) {
+        JSONObject object = null;
+        try {
+            object = jsonCreate2();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        */
+/*System.out.println(object);*//*
+
+        String url = getResources().getString(R.string.projecturl);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("test1");
+                        System.out.println(response);
+                        */
+/*try {
+                            JSONArray arr = response.getJSONArray("result");
+                            id = arr.getJSONObject(0).getString("id");
+                            user = arr.getJSONObject(1).getString("name");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }*//*
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("test2");
+                        System.out.println(error);
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+*/
     public JSONObject jsonCreate() throws JSONException {
         JSONObject jso = new JSONObject();
         JSONArray joarr = new JSONArray();
@@ -156,4 +318,36 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(ob);
         return ob;
     }
+/*
+    public JSONObject jsonCreate2() throws JSONException {
+        JSONArray arr = new JSONArray();
+        JSONArray arr2 = new JSONArray();
+        arr2.put("name");
+        arr2.put("partner_id");
+        arr2.put("color");
+        arr2.put("task_count");
+        arr2.put("label_tasks");
+        arr2.put("alias_id");
+        arr2.put("alias_domain");
+        arr2.put("is_favorite");
+        arr2.put("percentage_satisfaction_project");
+        arr2.put("rating_status");
+        JSONObject jsobj2 = new JSONObject();
+        jsobj2.put("lang","en_US");
+        jsobj2.put("tz",false);
+        jsobj2.put("uid",2);
+        JSONObject jsobj = new JSONObject();
+        jsobj.put("model","project.project");
+        jsobj.put("domain",arr);
+        jsobj.put("fields",arr2);
+        jsobj.put("limit",80);
+        jsobj.put("sort","");
+        jsobj.put("context",jsobj2);
+        JSONObject obj = new JSONObject();
+        obj.put("jsonrpc","2.0");
+        obj.put("method","call");
+        obj.put("params",jsobj);
+        System.out.println(obj);
+        return obj;
+    }*/
 }

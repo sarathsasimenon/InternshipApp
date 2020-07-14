@@ -13,11 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -29,8 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -91,14 +85,17 @@ public class item_select extends AppCompatActivity {
 
         final Intent intent = getIntent();
         final String client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
-        final String oid = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
+        /*String oid;*/
+        final String add = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
         id = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
 
         TextView cl = (TextView) findViewById(R.id.cl);
-        final TextView order = (TextView) findViewById(R.id.order);
+        /*TextView order = (TextView) findViewById(R.id.order);*/
+        final TextView address = (TextView) findViewById(R.id.address);
 
         cl.setText(client);
-        order.setText(oid);
+        /*order.setText(oid);*/
+        address.setText(add);
 
         btnStart = (Button) this.findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -116,11 +113,11 @@ public class item_select extends AppCompatActivity {
                 else {
                     locationTrack.showSettingsAlert();
                 }
-                postData(requestQueue);
+                /*postData(requestQueue);*/
 
                 final Intent intent1 = new Intent(item_select.this, stop_journey.class);
                 intent1.putExtra(EXTRA_TEXT, client);
-                intent1.putExtra(EXTRA_TEXT2, oid);
+                intent1.putExtra(EXTRA_TEXT2, add);
                 intent1.putExtra(EXTRA_TEXT3, m);
                 intent1.putExtra(EXTRA_TEXT4,latitude);
                 intent1.putExtra(EXTRA_TEXT5,longitude);
@@ -136,7 +133,7 @@ public class item_select extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return df.format(currentDate);
     }
-    public void postData(RequestQueue requestQueue) {
+    /*public void postData(RequestQueue requestQueue) {
         JSONObject object = null;
         try {
             object = jsonCreate();
@@ -149,17 +146,17 @@ public class item_select extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        /*locationTrack = new LocationTrack(item_select.this);
+                        *//*locationTrack = new LocationTrack(item_select.this);
                         System.out.println(response);
                         if (locationTrack.canGetLocation()) {
                             longitude = locationTrack.getLongitude();
                             latitude = locationTrack.getLatitude();
-                            *//*System.out.println(latitude);
-                            System.out.println(longitude);*//*
+                            *//**//*System.out.println(latitude);
+                            System.out.println(longitude);*//**//*
                         }
                         else{
                             locationTrack.showSettingsAlert();
-                        }*/
+                        }*//*
                         System.out.println(response);
                         try {
                             result = (int) response.get("result");
@@ -188,7 +185,7 @@ public class item_select extends AppCompatActivity {
         };
         requestQueue.add(jsonObjectRequest);
     }
-
+*/
     public JSONObject jsonCreate() throws JSONException {
         JSONObject objc = new JSONObject();
         objc.put("id",15);
