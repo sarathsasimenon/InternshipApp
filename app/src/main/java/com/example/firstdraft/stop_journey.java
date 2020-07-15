@@ -49,6 +49,8 @@ public class stop_journey extends AppCompatActivity {
 
     private Button btnEnd;
 
+    String cookie;
+
     String client;
     String add;
     /*String oid;*/
@@ -96,6 +98,7 @@ public class stop_journey extends AppCompatActivity {
         final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
         final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
         String result = intent.getStringExtra(item_select.EXTRA_TEXT6);
+        cookie = intent.getStringExtra(item_select.EXTRA_TEXT7);
 
         cl = (TextView) findViewById(R.id.cl);
         /*order = (TextView) findViewById(R.id.order);*/
@@ -143,7 +146,6 @@ public class stop_journey extends AppCompatActivity {
                         dialog.cancel();
                     }
                 }).show();
-
     }
 
     public String time(long milliseconds) {
@@ -257,7 +259,7 @@ public class stop_journey extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie", "session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+                headers.put("Cookie", cookie);
                 return headers;
             }
 
@@ -267,7 +269,7 @@ public class stop_journey extends AppCompatActivity {
             }
         };
         List<String> cookies = new ArrayList<>();
-        cookies.add("session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+        cookies.add(cookie);
         customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }

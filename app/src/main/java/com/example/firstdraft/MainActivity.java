@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,10 +30,16 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
     public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
+    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
+    public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
+
+    String cookie;
 
     String id;
     String user;
     String project;
+
+    TextView name;
 
     RequestQueue requestQueue;
     RequestQueue requestQueue1;
@@ -46,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Intent intent1 = getIntent();
+        final String c = intent1.getStringExtra(LoginActivity.EXTRA_TEXT);
+        cookie = "session_id="+c;
+        System.out.println(cookie);
+
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         postData(requestQueue);
@@ -57,16 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         dropdown = (Spinner) findViewById(R.id.dropdown);
 
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.clientlist));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dropdown.setAdapter(adapter);*/
-
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
 
         al.add("Choose a client and respective order id");
         postData1(requestQueue1);
-
-        /*final String[] al = getResources().getStringArray(R.array.clientlist);*/
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -86,7 +92,13 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra(EXTRA_TEXT, s);
                             /*intent.putExtra(EXTRA_TEXT2, address);*/
                             intent.putExtra(EXTRA_TEXT3, id);
+                            intent.putExtra(EXTRA_TEXT4,cookie);
+                            intent.putExtra(EXTRA_TEXT5,user);
                             startActivity(intent);
+                            Intent intent2 = new Intent(MainActivity.this,back_home.class);
+                            intent2.putExtra(EXTRA_TEXT4,cookie);
+                            intent2.putExtra(EXTRA_TEXT5,user);
+                            startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
@@ -143,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 /*System.out.println(id);
                 System.out.println(user);*/
+                name = (TextView) findViewById(R.id.name);
+                name.setText(user);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -154,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie","session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+                headers.put("Cookie",cookie);
                 return headers;
             }
             @Override
@@ -163,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         List<String> cookies = new ArrayList<>();
-        cookies.add("session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+        cookies.add(cookie);
         customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }
@@ -236,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie","session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+                headers.put("Cookie",cookie);
                 return headers;
             }
             @Override
@@ -245,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         List<String> cookies = new ArrayList<>();
-        cookies.add("session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+        cookies.add(cookie);
         customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }

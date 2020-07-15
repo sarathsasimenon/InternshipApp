@@ -24,12 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
 
     EditText username,password;
     Button login;
     RequestQueue requestQueue;
 
     String u, p;
+
+    String cookie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +45,21 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         login = (Button) findViewById((R.id.login));
 
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 u = username.getText().toString();
                 p = password.getText().toString();
                 postData(requestQueue);
+                /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra(EXTRA_TEXT, cookie);*/
             }
         });
     }
     public void openDashboard() {
         Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra(EXTRA_TEXT, cookie);
+        System.out.print(cookie);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
@@ -80,6 +86,12 @@ public class LoginActivity extends AppCompatActivity {
                         String k = null;
                         try {
                             k = key.getString(2);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            JSONObject obj = response.getJSONObject("result");
+                            cookie = obj.getString("session_id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

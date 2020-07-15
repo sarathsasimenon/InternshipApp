@@ -15,6 +15,7 @@ def post():
 
     pload2 = {"jsonrpc": "2.0","method": "call","params": {"args": [[["user_id","=",2]],["attendance_state","name"]],"model": "hr.employee","method": "search_read","kwargs": {}},"id": 49458607}
     headers = {'Content-Type': 'application/json'}
+    print(r1.cookies)
     r2 = requests.post('http://34.87.62.211/web/dataset/call_kw/hr.employee/search_read',headers=headers,json = pload2,cookies=r1.cookies)
   
     print(r2.text)

@@ -176,7 +176,7 @@
             tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/oid"
+            android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
@@ -184,7 +184,7 @@
             android:layout_marginEnd="295dp"
             android:layout_marginBottom="325dp"
             android:fontFamily="sans-serif"
-            android:text="@string/oid"
+            android:text="@string/location"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:typeface="serif"
@@ -195,7 +195,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
-        <TextView
+        <!--<TextView
             android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -213,7 +213,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints" />-->
 
         <Button
             android:id="@+id/btnStart"

@@ -42,12 +42,15 @@ public class item_select extends AppCompatActivity {
     public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
     public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
+    public static final String EXTRA_TEXT7 = "com.example.firstdraft.EXTRA_TEXT7";
 
     private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
     private ArrayList<String> permissions = new ArrayList<>();
 
     RequestQueue requestQueue;
+
+    String cookie;
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
@@ -92,6 +95,7 @@ public class item_select extends AppCompatActivity {
         final String client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
         final String add = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
         id = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
+        cookie = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
 
         TextView cl = (TextView) findViewById(R.id.cl);
         /*TextView order = (TextView) findViewById(R.id.order);*/
@@ -124,6 +128,7 @@ public class item_select extends AppCompatActivity {
                 intent1.putExtra(EXTRA_TEXT4,latitude);
                 intent1.putExtra(EXTRA_TEXT5,longitude);
                 intent1.putExtra(EXTRA_TEXT6,result);
+                intent1.putExtra(EXTRA_TEXT7,cookie);
                 startActivity(intent1);
                 overridePendingTransition(0, 0);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -142,7 +147,7 @@ public class item_select extends AppCompatActivity {
                 "    \"params\": {\n" +
                 "        \"args\": [\n" +
                 "            {\n" +
-                "                \"employee_id\":1,\"check_in\":\""+ time1 +"\",\"check_out\": false,\"x_check_in_lat\": " + lat +",\"x_check_in_long\": "+ longi + ",\"x_check_out_lat\": false,\n" +
+                "                \"employee_id\":"+id+",\"check_in\":\""+ time1 +"\",\"check_out\": false,\"x_check_in_lat\": " + lat +",\"x_check_in_long\": "+ longi + ",\"x_check_out_lat\": false,\n" +
                 "                \"x_check_out_long\": false,\n" +
                 "                \"x_distance_km\": 0\n" +
                 "            }\n" +
@@ -196,17 +201,17 @@ public class item_select extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie", "session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+                headers.put("Cookie", cookie);
                 return headers;
             }
-// 6e5424bcc56ce911f8c38147d83f69d72956231e
+
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
         };
         List<String> cookies = new ArrayList<>();
-        cookies.add("session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+        cookies.add(cookie);
         customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }

@@ -12,29 +12,64 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class back_home extends AppCompatActivity {
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
+    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
+    public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
+    public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
+    public static final String EXTRA_TEXT7 = "com.example.firstdraft.EXTRA_TEXT7";
 
-    private ArrayList permissionsToRequest;
+    private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
-    private ArrayList permissions = new ArrayList();
+    private ArrayList<String> permissions = new ArrayList<>();
+
+    RequestQueue requestQueue;
+
+    String cookie;
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
 
     private Button btnStart;
 
+    String time1;
+
+    double longitude;
+    double latitude;
+
+    String id;
+    String lat;
+    String longi;
+    String result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_back_home);
+
+        requestQueue = Volley.newRequestQueue(back_home.this);
 
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
@@ -46,11 +81,16 @@ public class back_home extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-        final String flag = "flag";
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final long m = time();
+        Date date = new Date();
+        Timestamp timestamp1 = new Timestamp(date.getTime());
+        final long m = timestamp1.getTime();
+        time1 = time(m);
+
+        final Intent intent = getIntent();
+        id = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
+        cookie = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
 
         btnStart = (Button) this.findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -58,32 +98,112 @@ public class back_home extends AppCompatActivity {
             public void onClick(View v) {
                 locationTrack = new LocationTrack(back_home.this);
                 if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    /*System.out.println(longitude);
-                    System.out.println(latitude);*/
+                    longitude = locationTrack.getLongitude();
+                    latitude = locationTrack.getLatitude();
+                    lat = Double.toString(latitude);
+                    longi = Double.toString(longitude);
                 }
                 else {
                     locationTrack.showSettingsAlert();
                 }
+                postData(requestQueue);
+
                 final Intent intent1 = new Intent(back_home.this, back_home_stop.class);
-                startActivity(intent1);
                 intent1.putExtra(EXTRA_TEXT3, m);
-                overridePendingTransition(0,0);
+                intent1.putExtra(EXTRA_TEXT4,latitude);
+                intent1.putExtra(EXTRA_TEXT5,longitude);
+                intent1.putExtra(EXTRA_TEXT6,result);
+                intent1.putExtra(EXTRA_TEXT7,cookie);
+                startActivity(intent1);
+                overridePendingTransition(0, 0);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }
         });
     }
 
-    public long time() {
-        Date date = new Date();
-        Timestamp timestamp1 = new Timestamp(date.getTime());
-        long milli = timestamp1.getTime();
-        return milli;
+    public String time(long milliseconds) {
+        Date currentDate = new Date(milliseconds);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return df.format(currentDate);
+    }
+    public void postData(RequestQueue requestQueue) {
+        String obj = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"args\": [\n" +
+                "            {\n" +
+                "                \"employee_id\":1,\"check_in\":\""+ time1 +"\",\"check_out\": false,\"x_check_in_lat\": " + lat +",\"x_check_in_long\": "+ longi + ",\"x_check_out_lat\": false,\n" +
+                "                \"x_check_out_long\": false,\n" +
+                "                \"x_distance_km\": 0\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"model\": \"hr.attendance\",\n" +
+                "        \"method\": \"create\",\n" +
+                "        \"kwargs\": {\n" +
+                "            \"context\": {\n" +
+                "                \"lang\": \"en_US\",\n" +
+                "                \"tz\": \"Asia/Kolkata\",\n" +
+                "                \"uid\": 2,\n" +
+                "                \"params\": {\n" +
+                "                    \"id\": 15,\n" +
+                "                    \"action\": 179,\n" +
+                "                    \"model\": \"hr.attendance\",\n" +
+                "                    \"view_type\": \"form\",\n" +
+                "                    \"menu_id\": 141\n" +
+                "                },\n" +
+                "                \"search_default_today\": 1\n" +
+                "            }\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 753438469\n" +
+                "}";
+        JSONObject object = null;
+        try {
+            object = new JSONObject(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(object);
+        String starturl = "http://34.87.62.211/web/dataset/call_kw/hr.attendance/create";
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                try {
+                    result = (String) response.get("result");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(result);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Cookie", cookie);
+                return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        List<String> cookies = new ArrayList<>();
+        cookies.add(cookie);
+        customRequest.setCookies(cookies);
+        requestQueue.add(customRequest);
     }
 
-    private ArrayList findUnAskedPermissions(ArrayList wanted) {
-        ArrayList result = new ArrayList();
+    private ArrayList<Object> findUnAskedPermissions(ArrayList<String> wanted) {
+        ArrayList<Object> result = new ArrayList<>();
         for (Object perm : wanted) {
             if (!hasPermission((String) perm)) {
                 result.add(perm);
@@ -148,10 +268,10 @@ public class back_home extends AppCompatActivity {
                 .create()
                 .show();
     }
-
+/*
     @Override
     protected void onDestroy() {
         super.onDestroy();
         locationTrack.stopListener();
-    }
+    }*/
 }
