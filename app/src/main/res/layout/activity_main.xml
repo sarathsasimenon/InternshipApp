@@ -71,6 +71,7 @@
             android:layout_marginEnd="246dp"
             android:layout_marginBottom="169dp"
             android:fontFamily="sans-serif-black"
+            android:text="@string/name"
             android:textColor="#010625"
             android:textSize="24sp"
             android:typeface="serif"
@@ -106,7 +107,6 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="5dp"
                 android:background="@android:color/transparent"
-                android:entries="@array/clientlist"
                 android:gravity="center"
                 android:prompt="@string/choose"
                 android:spinnerMode="dropdown" />

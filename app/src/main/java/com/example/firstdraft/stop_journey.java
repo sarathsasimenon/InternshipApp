@@ -13,10 +13,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +28,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -51,7 +57,7 @@ public class stop_journey extends AppCompatActivity {
     double longi2;
     double lat2;
 
-    String dist;
+    int dist;
     String lat;
     String longi;
     int result;
@@ -89,7 +95,7 @@ public class stop_journey extends AppCompatActivity {
         final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
         final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
         final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
-        result = intent.getIntExtra(item_select.EXTRA_TEXT6,0);
+        String result = intent.getStringExtra(item_select.EXTRA_TEXT6);
 
         cl = (TextView) findViewById(R.id.cl);
         /*order = (TextView) findViewById(R.id.order);*/
@@ -115,7 +121,7 @@ public class stop_journey extends AppCompatActivity {
                 else {
                     locationTrack.showSettingsAlert();
                 }
-                /*postData(requestQueue);*/
+                postData(requestQueue);
                 /*System.out.println(timer(milli));*/
 
                 final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
@@ -139,20 +145,6 @@ public class stop_journey extends AppCompatActivity {
                 }).show();
 
     }
-   /* @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("client",client);
-        savedInstanceState.putString("oid",oid);
-    }
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        String client = savedInstanceState.getString("client");
-        String oid = savedInstanceState.getString("oid");
-        cl.setText(client);
-        order.setText(oid);
-    }*/
 
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);
@@ -168,9 +160,9 @@ public class stop_journey extends AppCompatActivity {
         int h   = (int) ((m / (1000*60*60)) % 24);
         return String.format("%02d:%02d:%02d", h,min,s);
     }
-    public String distance(double lat1,double lat2,double long1,double long2){
+    public int distance(double lat1,double lat2,double long1,double long2){
         if((lat1==lat2) && (long1==long2)){
-            return ("0.0 KM");
+            return (0);
         }
         else{
             double theta = long1 - long2;
@@ -179,7 +171,8 @@ public class stop_journey extends AppCompatActivity {
             dist = rad2deg(dist);
             dist = dist * 60 * 1.1515;
             dist = dist * 1.609344;
-            return(dist + " KM");
+            int dis = (int)dist;
+            return(dis) ;
         }
     }
     private double deg2rad(double deg) {
@@ -189,42 +182,82 @@ public class stop_journey extends AppCompatActivity {
         return (rad * 180.0 / Math.PI);
     }
 
-    /*public void postData(RequestQueue requestQueue) {
+    public void postData(RequestQueue requestQueue) {
+        String obj = "{\n" +
+                "  \"jsonrpc\": \"2.0\",\n" +
+                "  \"method\": \"call\",\n" +
+                "  \"params\": {\n" +
+                "    \"args\": [\n" +
+                "      [\n" +
+                         result +
+                "      ],\n" +
+                "      {\n" +
+                "        \"check_out\":\""+ time2 + "\",\n" +
+                "        \"x_check_out_lat\":\"" + lat + "\",\n" +
+                "        \"x_check_out_long\":\"" + longi + "\",\n" +
+                "        \"x_distance_km\": " + dist + "\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"model\": \"hr.attendance\",\n" +
+                "    \"method\": \"write\",\n" +
+                "    \"kwargs\": {\n" +
+                "      \"context\": {\n" +
+                "        \"lang\": \"en_US\",\n" +
+                "        \"tz\": \"Asia/Kolkata\",\n" +
+                "        \"uid\": 2,\n" +
+                "        \"params\": {\n" +
+                "          \"id\": 15,\n" +
+                "          \"action\": 179,\n" +
+                "          \"model\": \"hr.attendance\",\n" +
+                "          \"view_type\": \"form\",\n" +
+                "          \"menu_id\": 141\n" +
+                "        },\n" +
+                "        \"search_default_today\": 1\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"id\": 329478684\n" +
+                "}";
         JSONObject object = null;
         try {
-            object = jsonCreate();
+            object = new JSONObject(obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        String url = getResources().getString(R.string.url3);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println(response);
-                        *//*locationTrack = new LocationTrack(stop_journey.this);
-                        if (locationTrack.canGetLocation()) {
-                            double longitude = locationTrack.getLongitude();
-                            double latitude = locationTrack.getLatitude();
-                            System.out.println(latitude);
-                            System.out.println(longitude);
-                        }
-                        else{
-                            locationTrack.showSettingsAlert();
-                        }*//*
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(error);
-                    }
-                }) {
+        System.out.println(object);
+        String stopurl = "http://34.87.62.211/web/dataset/call_kw/hr.attendance/write";
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
-            public Map<String, String> getHeaders() {
+            public void onResponse(JSONObject response) {
+                locationTrack = new LocationTrack(stop_journey.this);
+                if (locationTrack.canGetLocation()) {
+                    double longitude = locationTrack.getLongitude();
+                    double latitude = locationTrack.getLatitude();
+                    /*System.out.println(latitude);
+                    System.out.println(longitude);*/
+                }
+                else{
+                    locationTrack.showSettingsAlert();
+                }
+                System.out.println(response);
+                System.out.println("works");
+                try {
+                    result = (int) response.get("result");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
+                headers.put("Cookie", "session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
                 return headers;
             }
 
@@ -233,46 +266,10 @@ public class stop_journey extends AppCompatActivity {
                 return "application/json";
             }
         };
-        requestQueue.add(jsonObjectRequest);
-    }*/
-
-    public JSONObject jsonCreate() throws JSONException {
-        JSONObject objc = new JSONObject();
-        objc.put("id",15);
-        objc.put("action",179);
-        objc.put("model","hr.attendance");
-        objc.put("view_type","form");
-        objc.put("menu_id",141);
-        JSONObject jsobj = new JSONObject();
-        jsobj.put("lang","en_US");
-        jsobj.put("tz","Asia/Kolkata");
-        jsobj.put("uid",2);
-        jsobj.put("params",objc);
-        jsobj.put("search_default_today",1);
-        JSONObject jso = new JSONObject();
-        jso.put("context",jsobj);
-        JSONObject jo = new JSONObject();
-        jo.put("check_out",time2);
-        jo.put("x_check_out_lat",lat);
-        jo.put("x_check_out_long",longi);
-        jo.put("x_distance_km",dist);
-        JSONArray ar = new JSONArray();
-        ar.put(result);
-        JSONArray arr = new JSONArray();
-        arr.put(ar);
-        arr.put(jo);
-        JSONObject obj = new JSONObject();
-        obj.put("args",arr);
-        obj.put("model","hr.attendance");
-        obj.put("method","write");
-        obj.put("kwargs",jso);
-        JSONObject ob = new JSONObject();
-        ob.put("jsonrpc","2.0");
-        ob.put("method","call");
-        ob.put("params",obj);
-        ob.put("id",329478684);
-        System.out.println(ob);
-        return ob;
+        List<String> cookies = new ArrayList<>();
+        cookies.add("session_id=5532515de4dba12c8836e4842814f9459f8df9dc");
+        customRequest.setCookies(cookies);
+        requestQueue.add(customRequest);
     }
 
     private ArrayList findUnAskedPermissions(ArrayList wanted) {
@@ -341,11 +338,11 @@ public class stop_journey extends AppCompatActivity {
                 .create()
                 .show();
     }
-
+/*
     @Override
     protected void onDestroy() {
         super.onDestroy();
         locationTrack.stopListener();
-    }
+    }*/
 }
 

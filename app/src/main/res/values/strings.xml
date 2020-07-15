@@ -1,18 +1,9 @@
 <resources>
     <string name="app_name">Deceler Vibrotek</string>
     <string name="hello">Hello</string>
-    <string name="name">Sarath Menon</string>
+    <string name="name">Administrator</string>
     <string name="choose">Choose your destination</string>
-    <string-array name="clientlist">
-        <item>Choose a client and respective order id</item>
-        <item>Xyz - 54623</item>
-        <item>Xyz - 23457</item>
-        <item>Abc - 12347</item>
-        <item>Efg - 85612</item>
-        <item>Abc - 57965</item>
-        <item>Wqr - 98746</item>
-        <item>Back Home</item>
-    </string-array>
+    <string name="choose2">Choose a client and respective order id</string>
     <string name="client">Client Name:</string>
     <string name="oid">Order ID:</string>
     <string name="location">Location:</string>
