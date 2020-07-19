@@ -71,16 +71,17 @@
             android:layout_marginEnd="246dp"
             android:layout_marginBottom="169dp"
             android:fontFamily="sans-serif-black"
-            android:text="@string/name"
             android:textColor="#010625"
             android:textSize="24sp"
             android:typeface="serif"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="MissingConstraints"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

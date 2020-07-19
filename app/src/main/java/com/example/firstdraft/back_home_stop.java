@@ -4,15 +4,16 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,8 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -44,25 +45,37 @@ public class back_home_stop extends AppCompatActivity {
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
 
-    Intent intent = getIntent();
+    SharedPreferences sharedPreferences;
 
     private Button btnEnd;
 
+    String userid;
+    String user;
+
     String cookie;
+
+    String time1;
     String time2;
 
     double longi2;
     double lat2;
 
     int dist;
-    String lat;
-    String longi;
-    int result;
+    String checkoutlat;
+    String checkoutlong;
+    String id;
+
+    String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_back_home_stop);
+
+        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        cookie = sharedPreferences.getString("Cookie","");
+        id = sharedPreferences.getString("uid","");
+
 
         requestQueue = Volley.newRequestQueue(back_home_stop.this);
 
@@ -76,18 +89,22 @@ public class back_home_stop extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-        Date date = new Date();
-        Timestamp timestamp2 = new Timestamp(date.getTime());
-        final long m = timestamp2.getTime();
-        time2 = time(m);
-        System.out.println(time2);
-
         Intent intent = getIntent();
         final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
         final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
         final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
-        String result = intent.getStringExtra(item_select.EXTRA_TEXT6);
-        cookie = intent.getStringExtra(item_select.EXTRA_TEXT7);
+        result = intent.getStringExtra(item_select.EXTRA_TEXT7);
+        userid = intent.getStringExtra(item_select.EXTRA_TEXT6);
+        user = intent.getStringExtra(item_select.EXTRA_TEXT8);
+
+        Date date = new Date();
+        Timestamp timestamp2 = new Timestamp(date.getTime());
+        final long m = timestamp2.getTime();
+        time2 = time(m);
+        time1 = time(milli);
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(user);
 
         btnEnd = (Button) this.findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +114,8 @@ public class back_home_stop extends AppCompatActivity {
                 if (locationTrack.canGetLocation()) {
                     longi2 = locationTrack.getLongitude();
                     lat2 = locationTrack.getLatitude();
-                    lat = Double.toString(lat2);
-                    longi = Double.toString(longi2);
+                    checkoutlat = Double.toString(lat2);
+                    checkoutlong = Double.toString(longi2);
 
                     dist = distance(lat1,lat2,longi1,longi2);
                 }
@@ -120,7 +137,6 @@ public class back_home_stop extends AppCompatActivity {
                 .setMessage("This will end the app. Use the home button instead.")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
                         dialog.cancel();
                     }
                 }).show();
@@ -128,6 +144,7 @@ public class back_home_stop extends AppCompatActivity {
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df.format(currentDate);
     }
     public static String timer(long milli){
@@ -163,39 +180,31 @@ public class back_home_stop extends AppCompatActivity {
 
     public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
-                "  \"jsonrpc\": \"2.0\",\n" +
-                "  \"method\": \"call\",\n" +
-                "  \"params\": {\n" +
-                "    \"args\": [\n" +
-                "      [\n" +
-                result +
-                "      ],\n" +
-                "      {\n" +
-                "        \"check_out\":\""+ time2 + "\",\n" +
-                "        \"x_check_out_lat\":\"" + lat + "\",\n" +
-                "        \"x_check_out_long\":\"" + longi + "\",\n" +
-                "        \"x_distance_km\": " + dist + "\n" +
-                "      }\n" +
-                "    ],\n" +
-                "    \"model\": \"hr.attendance\",\n" +
-                "    \"method\": \"write\",\n" +
-                "    \"kwargs\": {\n" +
-                "      \"context\": {\n" +
-                "        \"lang\": \"en_US\",\n" +
-                "        \"tz\": \"Asia/Kolkata\",\n" +
-                "        \"uid\": 2,\n" +
-                "        \"params\": {\n" +
-                "          \"id\": 15,\n" +
-                "          \"action\": 179,\n" +
-                "          \"model\": \"hr.attendance\",\n" +
-                "          \"view_type\": \"form\",\n" +
-                "          \"menu_id\": 141\n" +
-                "        },\n" +
-                "        \"search_default_today\": 1\n" +
-                "      }\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"id\": 329478684\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"args\": [\n" +
+                "            [" + result + "],\n" +
+                "            {\n" +
+                "                \"employee_id\":" + userid + ",\n" +
+                "                \"check_out\": \""+ time2 +"\",\n" +
+                "               \n" +
+                "                \"gps_lat_check_out\": \""+checkoutlat+"\",\n" +
+                "                \"gps_lang_check_out\": \""+checkoutlong+"\"\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"model\": \"hr.attendance\",\n" +
+                "        \"method\": \"write\",\n" +
+                "        \"kwargs\": {\n" +
+                "            \"context\": {\n" +
+                "                \"lang\": \"en_US\",\n" +
+                "                \"tz\": \"Asia/Kolkata\",\n" +
+                "                \"uid\": "+ id +",\n" +
+                "                \"search_default_today\": 1\n" +
+                "            }\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 578731422\n" +
                 "}";
         JSONObject object = null;
         try {
@@ -203,27 +212,13 @@ public class back_home_stop extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(object);
-        String stopurl = "http://34.87.62.211/web/dataset/call_kw/hr.attendance/write";
+        String stopurl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/write";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 locationTrack = new LocationTrack(back_home_stop.this);
                 if (locationTrack.canGetLocation()) {
-                    double longitude = locationTrack.getLongitude();
-                    double latitude = locationTrack.getLatitude();
-                    /*System.out.println(latitude);
-                    System.out.println(longitude);*/
-                }
-                else{
-                    locationTrack.showSettingsAlert();
-                }
-                /*System.out.println(response);
-                System.out.println("works");*/
-                try {
-                    result = (int) response.get("result");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    /*System.out.println(response);*/
                 }
             }
         }, new Response.ErrorListener() {
@@ -233,10 +228,10 @@ public class back_home_stop extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie", cookie);
+                headers.put("Cookie",cookie);
                 return headers;
             }
 
@@ -245,14 +240,11 @@ public class back_home_stop extends AppCompatActivity {
                 return "application/json";
             }
         };
-        List<String> cookies = new ArrayList<>();
-        cookies.add(cookie);
-        customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }
 
-    private ArrayList findUnAskedPermissions(ArrayList wanted) {
-        ArrayList result = new ArrayList();
+    private ArrayList<Object> findUnAskedPermissions(ArrayList<String> wanted) {
+        ArrayList<Object> result = new ArrayList<>();
         for (Object perm : wanted) {
             if (!hasPermission((String) perm)) {
                 result.add(perm);
@@ -310,17 +302,19 @@ public class back_home_stop extends AppCompatActivity {
 
     }
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(back_home_stop  .this)
+        new AlertDialog.Builder(back_home_stop.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
                 .create()
                 .show();
     }
-/*
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationTrack.stopListener();
-    }*/
+    }
 }

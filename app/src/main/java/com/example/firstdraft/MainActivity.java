@@ -1,6 +1,9 @@
 package com.example.firstdraft;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,9 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,7 +26,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,9 +35,16 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
 
-    String cookie;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
-    String id;
+    private Context mContext;
+
+    Context context;
+
+    String cookie;
+    String uid;
+
+    String userid;
     String user;
     String project;
 
@@ -46,26 +55,27 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> al = new ArrayList<>();
 
+    SharedPreferences sharedPreferences;
+
     private Spinner dropdown;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Intent intent1 = getIntent();
-        final String c = intent1.getStringExtra(LoginActivity.EXTRA_TEXT);
-        cookie = "session_id="+c;
-        System.out.println(cookie);
+        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        cookie = sharedPreferences.getString("Cookie","");
+        uid = sharedPreferences.getString("uid","");
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("uid", uid);
+        editor.commit();
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         postData(requestQueue);
-
-        /*System.out.println(user);*/
-
-        /*TextView name = (TextView) findViewById(R.id.name);
-        name.setText("Administrator");*/
 
         dropdown = (Spinner) findViewById(R.id.dropdown);
 
@@ -83,22 +93,19 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         String s = parent.getItemAtPosition(position).toString();
                         if (s.equals("Head Office")) {
-                            Intent intent1 = new Intent(MainActivity.this, back_home.class);
-                            startActivity(intent1);
+                            Intent intent2 = new Intent(MainActivity.this,back_home.class);
+                            intent2.putExtra(EXTRA_TEXT3,userid);
+                            intent2.putExtra(EXTRA_TEXT5,user);
+                            startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                         else {
                             Intent intent = new Intent(MainActivity.this, item_select.class);
                             intent.putExtra(EXTRA_TEXT, s);
                             /*intent.putExtra(EXTRA_TEXT2, address);*/
-                            intent.putExtra(EXTRA_TEXT3, id);
-                            intent.putExtra(EXTRA_TEXT4,cookie);
+                            intent.putExtra(EXTRA_TEXT3,userid);
                             intent.putExtra(EXTRA_TEXT5,user);
                             startActivity(intent);
-                            Intent intent2 = new Intent(MainActivity.this,back_home.class);
-                            intent2.putExtra(EXTRA_TEXT4,cookie);
-                            intent2.putExtra(EXTRA_TEXT5,user);
-                            startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
@@ -120,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 "                [\n" +
                 "                    \"user_id\",\n" +
                 "                    \"=\",\n" +
-                "                    2\n" +
+                                       uid +
                 "                ]\n" +
                 "            ],\n" +
                 "            [\n" +
@@ -140,21 +147,19 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        /*System.out.println(object);*/
-        String nameurl = "http://34.87.62.211/web/dataset/call_kw/hr.employee/search_read";
+        String nameurl = "http://34.87.169.30/web/dataset/call_kw/hr.employee/search_read";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
+                /*System.out.println(response);*/
                 try {
                     JSONArray arr = response.getJSONArray("result");
-                    id = arr.getJSONObject(0).getString("id");
-                    user = arr.getJSONObject(0).getString("name");
+                    JSONObject obj = arr.getJSONObject(0);
+                    userid = obj.getString("id");
+                    user = obj.getString("name");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                /*System.out.println(id);
-                System.out.println(user);*/
                 name = (TextView) findViewById(R.id.name);
                 name.setText(user);
             }
@@ -165,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Cookie",cookie);
@@ -176,9 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 return "application/json";
             }
         };
-        List<String> cookies = new ArrayList<>();
-        cookies.add(cookie);
-        customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }
 
@@ -218,13 +220,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        /*System.out.println(object);*/
-        String projecturl = "http://34.87.62.211/web/dataset/search_read";
+        String projecturl = "http://34.87.169.30/web/dataset/search_read";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, projecturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /*System.out.println("test1");
-                System.out.println(response);*/
+                /*System.out.println(response);*/
                 try {
                     JSONObject obj = response.getJSONObject("result");
                     JSONArray arr = obj.getJSONArray("records");
@@ -235,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                /*System.out.println(al);*/
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, al);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dropdown.setAdapter(adapter);
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Cookie",cookie);
@@ -258,9 +257,6 @@ public class MainActivity extends AppCompatActivity {
                 return "application/json";
             }
         };
-        List<String> cookies = new ArrayList<>();
-        cookies.add(cookie);
-        customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }
 }

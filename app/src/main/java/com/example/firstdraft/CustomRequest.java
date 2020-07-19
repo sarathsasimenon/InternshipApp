@@ -1,6 +1,5 @@
 package com.example.firstdraft;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomRequest extends JsonObjectRequest {
+public abstract class CustomRequest extends JsonObjectRequest {
     public CustomRequest(int method, String url, JSONObject jsonRequest,
                          Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(method, url, jsonRequest, listener, errorListener);
@@ -26,7 +25,7 @@ public class CustomRequest extends JsonObjectRequest {
     }
 
     @Override
-    public Map<String, String> getHeaders() throws AuthFailureError {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 }

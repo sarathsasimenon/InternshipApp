@@ -1,6 +1,7 @@
 package com.example.firstdraft;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
+    public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
 
     EditText username,password;
     Button login;
@@ -32,7 +35,11 @@ public class LoginActivity extends AppCompatActivity {
 
     String u, p;
 
-    String cookie;
+    String uid;
+
+    String rawCookies;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         requestQueue = Volley.newRequestQueue(LoginActivity.this);
+
+        sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
@@ -51,15 +60,11 @@ public class LoginActivity extends AppCompatActivity {
                 u = username.getText().toString();
                 p = password.getText().toString();
                 postData(requestQueue);
-                /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra(EXTRA_TEXT, cookie);*/
             }
         });
     }
     public void openDashboard() {
         Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra(EXTRA_TEXT, cookie);
-        System.out.print(cookie);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
     }
@@ -67,9 +72,9 @@ public class LoginActivity extends AppCompatActivity {
         JSONObject objc = new JSONObject();
         JSONObject object = new JSONObject();
         try {
-            objc.put("db", "bitnami_odoo");
+            objc.put("db", "Deceler_test_15-july-2020");
             objc.put("login",u);
-            objc.put("password", p);
+            objc.put("password",p);
 
             object.put("params", objc);
         }
@@ -77,11 +82,12 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = getResources().getString(R.string.loginurl);
+        String url = "http://34.87.169.30/web/session/authenticate/";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        /*System.out.println(response);*/
                         JSONArray key = response.names();
                         String k = null;
                         try {
@@ -91,12 +97,12 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         try {
                             JSONObject obj = response.getJSONObject("result");
-                            cookie = obj.getString("session_id");
+                            JSONObject obj2 = obj.getJSONObject("user_context");
+                            uid = obj2.getString("uid");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         if(k.equals("result")) {
-                            /*System.out.println(response);*/
                             Toast.makeText(getApplicationContext(), "Logging In", Toast.LENGTH_SHORT).show();
                             openDashboard();
                         }
@@ -122,7 +128,24 @@ public class LoginActivity extends AppCompatActivity {
             public String getBodyContentType() {
                 return "application/json";
             }
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                /*Log.i("response",response.headers.toString());*/
+                Map<String, String> responseHeaders = response.headers;
+                rawCookies = responseHeaders.get("Set-Cookie");
+                /*openDashboard();*/
+                return super.parseNetworkResponse(response);
+            }
         };
         requestQueue.add(jsonObjectRequest);
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Cookie", rawCookies);
+        editor.putString("uid",uid);
+        editor.commit();
     }
 }

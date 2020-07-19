@@ -1,6 +1,11 @@
 <component name="ProjectDictionaryState">
   <dictionary name="sarat">
     <words>
+      <w>checkinlat</w>
+      <w>checkinlong</w>
+      <w>checkoutlat</w>
+      <w>checkoutlong</w>
+      <w>longi</w>
       <w>sarathmenon</w>
     </words>
   </dictionary>

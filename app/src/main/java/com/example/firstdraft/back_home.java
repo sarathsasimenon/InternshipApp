@@ -4,15 +4,16 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,8 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -40,6 +41,7 @@ public class back_home extends AppCompatActivity {
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
     public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
     public static final String EXTRA_TEXT7 = "com.example.firstdraft.EXTRA_TEXT7";
+    public static final String EXTRA_TEXT8 = "com.example.firstdraft.EXTRA_TEXT8";
 
     private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
@@ -58,16 +60,26 @@ public class back_home extends AppCompatActivity {
 
     double longitude;
     double latitude;
+    long m;
 
-    String id;
+    String userid;
+    String user;
+
+    String uid;
     String lat;
     String longi;
     String result;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_back_home);
+
+        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        cookie = sharedPreferences.getString("Cookie","");
+        uid = sharedPreferences.getString("uid","");
 
         requestQueue = Volley.newRequestQueue(back_home.this);
 
@@ -85,12 +97,15 @@ public class back_home extends AppCompatActivity {
 
         Date date = new Date();
         Timestamp timestamp1 = new Timestamp(date.getTime());
-        final long m = timestamp1.getTime();
+        m = timestamp1.getTime();
         time1 = time(m);
 
         final Intent intent = getIntent();
-        id = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
-        cookie = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
+        userid = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
+        user = intent.getStringExtra(MainActivity.EXTRA_TEXT5);
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(user);
 
         btnStart = (Button) this.findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -107,23 +122,18 @@ public class back_home extends AppCompatActivity {
                     locationTrack.showSettingsAlert();
                 }
                 postData(requestQueue);
-
-                final Intent intent1 = new Intent(back_home.this, back_home_stop.class);
-                intent1.putExtra(EXTRA_TEXT3, m);
-                intent1.putExtra(EXTRA_TEXT4,latitude);
-                intent1.putExtra(EXTRA_TEXT5,longitude);
-                intent1.putExtra(EXTRA_TEXT6,result);
-                intent1.putExtra(EXTRA_TEXT7,cookie);
-                startActivity(intent1);
-                overridePendingTransition(0, 0);
-                intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }
         });
     }
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(back_home.this,MainActivity.class);
+        startActivity(intent);
+    }
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df.format(currentDate);
     }
     public void postData(RequestQueue requestQueue) {
@@ -133,9 +143,11 @@ public class back_home extends AppCompatActivity {
                 "    \"params\": {\n" +
                 "        \"args\": [\n" +
                 "            {\n" +
-                "                \"employee_id\":1,\"check_in\":\""+ time1 +"\",\"check_out\": false,\"x_check_in_lat\": " + lat +",\"x_check_in_long\": "+ longi + ",\"x_check_out_lat\": false,\n" +
-                "                \"x_check_out_long\": false,\n" +
-                "                \"x_distance_km\": 0\n" +
+                "                \"employee_id\":" + userid + ",\"check_in\":\""+ time1 +"\",\"check_out\": false,\n" +
+                "                \"hr_project_id\": 2,\n" +
+                "                \"gps_lat_check_in\": " + lat +"\",\"gps_lang_check_in\":\""+ longi + "\",\"gps_lat_check_out\": false,\n" +
+                "                \"gps_lang_check_out\": \"false\",\n" +
+                "                \"dist_check_in\": false\n" +
                 "            }\n" +
                 "        ],\n" +
                 "        \"model\": \"hr.attendance\",\n" +
@@ -144,19 +156,19 @@ public class back_home extends AppCompatActivity {
                 "            \"context\": {\n" +
                 "                \"lang\": \"en_US\",\n" +
                 "                \"tz\": \"Asia/Kolkata\",\n" +
-                "                \"uid\": 2,\n" +
+                "                \"uid\": "+uid+",\n" +
                 "                \"params\": {\n" +
-                "                    \"id\": 15,\n" +
-                "                    \"action\": 179,\n" +
+                "                    \"id\": \"\",\n" +
+                "                    \"action\": 433,\n" +
                 "                    \"model\": \"hr.attendance\",\n" +
                 "                    \"view_type\": \"form\",\n" +
-                "                    \"menu_id\": 141\n" +
+                "                    \"menu_id\": 292\n" +
                 "                },\n" +
                 "                \"search_default_today\": 1\n" +
                 "            }\n" +
                 "        }\n" +
                 "    },\n" +
-                "    \"id\": 753438469\n" +
+                "    \"id\": 653529553\n" +
                 "}";
         JSONObject object = null;
         try {
@@ -164,18 +176,27 @@ public class back_home extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(object);
-        String starturl = "http://34.87.62.211/web/dataset/call_kw/hr.attendance/create";
+        String starturl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/create";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
+                /*System.out.println(response);*/
                 try {
-                    result = (String) response.get("result");
+                    result = response.getString("result");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                System.out.println(result);
+
+                final Intent intent1 = new Intent(back_home.this, back_home_stop.class);
+                intent1.putExtra(EXTRA_TEXT3, m);
+                intent1.putExtra(EXTRA_TEXT4,latitude);
+                intent1.putExtra(EXTRA_TEXT5,longitude);
+                intent1.putExtra(EXTRA_TEXT6,userid);
+                intent1.putExtra(EXTRA_TEXT7,result);
+                intent1.putExtra(EXTRA_TEXT8,user);
+                startActivity(intent1);
+                overridePendingTransition(0, 0);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -184,10 +205,10 @@ public class back_home extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Cookie", cookie);
+                headers.put("Cookie",cookie);
                 return headers;
             }
 
@@ -196,9 +217,6 @@ public class back_home extends AppCompatActivity {
                 return "application/json";
             }
         };
-        List<String> cookies = new ArrayList<>();
-        cookies.add(cookie);
-        customRequest.setCookies(cookies);
         requestQueue.add(customRequest);
     }
 
@@ -268,10 +286,12 @@ public class back_home extends AppCompatActivity {
                 .create()
                 .show();
     }
-/*
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationTrack.stopListener();
-    }*/
+    }
 }
