@@ -29,6 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
     public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
 
+    private long backPressedTime;
+    private Toast backToast;
+
     EditText username,password;
     Button login;
     RequestQueue requestQueue;
@@ -67,6 +70,23 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+    }
+    @Override
+    public void onBackPressed() {
+        if(backPressedTime + 2000 > System.currentTimeMillis()){
+            backToast.cancel();
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+            finish();
+            return;
+        }
+        else{
+            backToast = Toast.makeText(getBaseContext(),"Press back again to exit",Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
     public void postData(RequestQueue requestQueue){
         JSONObject objc = new JSONObject();

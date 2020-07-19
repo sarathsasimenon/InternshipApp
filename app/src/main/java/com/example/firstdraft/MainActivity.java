@@ -1,6 +1,5 @@
 package com.example.firstdraft;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -10,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,14 +32,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
     public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
-    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-
-    private Context mContext;
-
-    Context context;
+    private long backPressedTime;
+    private Toast backToast;
 
     String cookie;
     String uid;
@@ -116,6 +112,23 @@ public class MainActivity extends AppCompatActivity {
                 //do nothing
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        if(backPressedTime + 2000 > System.currentTimeMillis()){
+            backToast.cancel();
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+            finish();
+            return;
+        }
+        else{
+            backToast = Toast.makeText(getBaseContext(),"Press back again to exit",Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
     public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
