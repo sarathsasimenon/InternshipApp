@@ -93,8 +93,8 @@ public class LoginActivity extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             objc.put("db", "Deceler_test_15-july-2020");
-            objc.put("login","vinoth@inspirenetworks.in");
-            objc.put("password","123");
+            objc.put("login",u);
+            objc.put("password",p);
 
             object.put("params", objc);
         }
