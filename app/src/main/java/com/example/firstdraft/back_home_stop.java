@@ -190,8 +190,7 @@ public class back_home_stop extends AppCompatActivity {
                 "                \"check_out\": \""+ time2 +"\",\n" +
                 "               \n" +
                 "                \"gps_lat_check_out\": \""+checkoutlat+"\",\n" +
-                "                \"gps_lang_check_out\": \""+checkoutlong+"\"\n" +
-                "            }\n" +
+                "                \"gps_lang_check_out\": \""+checkoutlong+"\",\"dist_check_in\":" + dist + " }\n" +
                 "        ],\n" +
                 "        \"model\": \"hr.attendance\",\n" +
                 "        \"method\": \"write\",\n" +

@@ -202,7 +202,7 @@ public class stop_journey extends AppCompatActivity {
                 "                \"employee_id\":" + userid + ",\n" +
                 "                \"check_out\": \""+ time2 +"\",\n" +
                 "                \"gps_lat_check_out\": \""+checkoutlat+"\",\n" +
-                "                \"gps_lang_check_out\": \""+checkoutlong+"\" }\n" +
+                "                \"gps_lang_check_out\": \""+checkoutlong+"\",\"dist_check_in\":" + dist + " }\n" +
                 "        ],\n" +
                 "        \"model\": \"hr.attendance\",\n" +
                 "        \"method\": \"write\",\n" +

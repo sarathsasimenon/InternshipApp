@@ -7,63 +7,69 @@
     android:background="@color/white"
     tools:context=".LoginActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0" />
+
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="138dp"
-        android:layout_marginEnd="131dp"
-        android:layout_marginBottom="451dp"
+        android:layout_width="197dp"
+        android:layout_height="180dp"
         android:contentDescription="@string/todo"
         android:src="@mipmap/user"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="@id/guideline0"
+        app:layout_constraintBottom_toTopOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.652"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.42" />
 
     <EditText
         android:id="@+id/username"
         android:layout_width="259dp"
         android:layout_height="40dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="345dp"
-        android:layout_marginEnd="76dp"
-        android:layout_marginBottom="346dp"
         android:autofillHints=""
         android:ems="12"
         android:focusable="true"
         android:hint="@string/username"
         android:inputType="textEmailAddress"
         android:textColor="@color/black"
-        android:textColorHint="#4C4E4A"
         android:textColorHighlight="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColorHint="#4C4E4A"
+        tools:ignore="MissingConstraints"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline1"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
+        app:layout_constraintVertical_bias="0.2"/>
 
     <EditText
         android:id="@+id/password"
         android:layout_width="259dp"
         android:layout_height="40dp"
-        android:layout_marginTop="12dp"
         android:ems="12"
         android:focusable="true"
         android:hint="@string/password"
         android:importantForAutofill="no"
         android:inputType="textPassword"
         android:textColor="@color/black"
-        android:textColorHint="#4C4E4A"
         android:textColorHighlight="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColorHint="#4C4E4A"
+        tools:ignore="MissingConstraints"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline1"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
+        app:layout_constraintVertical_bias="0.4" />
 
     <Button
         android:id="@+id/login"
@@ -73,11 +79,18 @@
         android:background="@drawable/button_bg"
         android:text="@string/login"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintVertical_bias="0.256"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline1"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
+        app:layout_constraintVertical_bias="0.7"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
