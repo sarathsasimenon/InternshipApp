@@ -204,7 +204,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/guideline4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline3"
             app:layout_constraintVertical_bias="0.35"
@@ -239,7 +239,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/guideline4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline3"
             app:layout_constraintVertical_bias="0.65"
@@ -286,7 +286,7 @@
 
         <Button
             android:id="@+id/btnStart"
-            android:layout_width="145dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
@@ -305,7 +305,7 @@
 
         <Button
             android:id="@+id/btnEnd"
-            android:layout_width="145dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"

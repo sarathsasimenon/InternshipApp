@@ -28,9 +28,9 @@ public class LocationTrack extends Service implements LocationListener {
     double latitude;
     double longitude;
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
 
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 0;
     protected LocationManager locationManager;
 
     public LocationTrack(Context mContext) {
@@ -38,7 +38,7 @@ public class LocationTrack extends Service implements LocationListener {
         getLocation();
     }
 
-    private Location getLocation() {
+    private void getLocation() {
 
         try {
             locationManager = (LocationManager) mContext
@@ -82,7 +82,7 @@ public class LocationTrack extends Service implements LocationListener {
                     }
                 }
 
-                /*if (checkNetwork) {
+                if (checkNetwork) {
                     if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
@@ -107,14 +107,13 @@ public class LocationTrack extends Service implements LocationListener {
                         latitude = loc.getLatitude();
                         longitude = loc.getLongitude();
                     }
-                }*/
+                }
 
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        return loc;
     }
 
     public double getLongitude() {
@@ -152,6 +151,16 @@ public class LocationTrack extends Service implements LocationListener {
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(mContext);
+                alertDialog2.setTitle("GPS needs to be switched on!");
+
+                alertDialog2.setMessage("Switch on GPS?");
+
+                alertDialog2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        mContext.startActivity(intent);}
+                });
             }
         });
 

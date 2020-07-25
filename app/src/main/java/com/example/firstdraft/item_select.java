@@ -75,6 +75,8 @@ public class item_select extends AppCompatActivity {
     long m;
     String user;
 
+    int flag = 0;
+
     SharedPreferences sharedPreferences;
 
     @Override
@@ -108,7 +110,7 @@ public class item_select extends AppCompatActivity {
 
         final Intent intent = getIntent();
         client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
-        add = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
+        add = "Velachery, Chennai";
         userid = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
         user = intent.getStringExtra(MainActivity.EXTRA_TEXT5);
 
@@ -127,16 +129,12 @@ public class item_select extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 locationTrack = new LocationTrack(item_select.this);
-                if (locationTrack.canGetLocation()) {
-                    longitude = locationTrack.getLongitude();
-                    latitude = locationTrack.getLatitude();
-                    lat = Double.toString(latitude);
-                    longi = Double.toString(longitude);
-                }
-                else {
+                if (!locationTrack.canGetLocation()) {
                     locationTrack.showSettingsAlert();
                 }
-                postData(requestQueue);
+                if (locationTrack.canGetLocation()) {
+                    getLocation();
+                }
             }
         });
     }
@@ -144,6 +142,13 @@ public class item_select extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(item_select.this,MainActivity.class);
         startActivity(intent);
+    }
+    public void getLocation(){
+        longitude = locationTrack.getLongitude();
+        latitude = locationTrack.getLatitude();
+        lat = Double.toString(latitude);
+        longi = Double.toString(longitude);
+        postData(requestQueue);
     }
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);

@@ -95,7 +95,7 @@ public class stop_journey extends AppCompatActivity {
 
         Intent intent = getIntent();
         client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
-        add = intent.getStringExtra(MainActivity.EXTRA_TEXT2);
+        add = "Velachery, Chennai";
         final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
         final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
         final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
 
-        al.add("Choose a client and respective order id");
+        al.add("Choose a destination");
         postData1(requestQueue1);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
