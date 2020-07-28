@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         requestQueue = Volley.newRequestQueue(LoginActivity.this);
@@ -107,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        /*System.out.println(response);*/
                         JSONArray key = response.names();
                         String k = null;
                         try {
@@ -151,10 +151,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                /*Log.i("response",response.headers.toString());*/
                 Map<String, String> responseHeaders = response.headers;
                 rawCookies = responseHeaders.get("Set-Cookie");
-                /*openDashboard();*/
                 return super.parseNetworkResponse(response);
             }
         };

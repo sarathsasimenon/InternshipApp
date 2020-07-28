@@ -64,6 +64,7 @@ public class back_home extends AppCompatActivity {
 
     String userid;
     String user;
+    String projectid;
 
     String uid;
     String lat;
@@ -71,6 +72,7 @@ public class back_home extends AppCompatActivity {
     String result;
 
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class back_home extends AppCompatActivity {
         setContentView(R.layout.activity_back_home);
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        sharedPreferences1 = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
 
@@ -102,6 +105,7 @@ public class back_home extends AppCompatActivity {
 
         final Intent intent = getIntent();
         userid = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
+        projectid = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
         user = intent.getStringExtra(MainActivity.EXTRA_TEXT5);
 
         TextView name = (TextView) findViewById(R.id.name);
@@ -111,17 +115,17 @@ public class back_home extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("journeyover",true);
+                editor.putBoolean("journeyhomeover",false);
+                editor.commit();
                 locationTrack = new LocationTrack(back_home.this);
-                if (locationTrack.canGetLocation()) {
-                    longitude = locationTrack.getLongitude();
-                    latitude = locationTrack.getLatitude();
-                    lat = Double.toString(latitude);
-                    longi = Double.toString(longitude);
-                }
-                else {
+                if (!locationTrack.canGetLocation()) {
                     locationTrack.showSettingsAlert();
                 }
-                postData(requestQueue);
+                if (locationTrack.canGetLocation()) {
+                    getLocation();
+                }
             }
         });
     }
@@ -129,6 +133,13 @@ public class back_home extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(back_home.this,MainActivity.class);
         startActivity(intent);
+    }
+    public void getLocation(){
+        longitude = locationTrack.getLongitude();
+        latitude = locationTrack.getLatitude();
+        lat = Double.toString(latitude);
+        longi = Double.toString(longitude);
+        postData(requestQueue);
     }
     public String time(long milliseconds) {
         Date currentDate = new Date(milliseconds);
@@ -144,7 +155,7 @@ public class back_home extends AppCompatActivity {
                 "        \"args\": [\n" +
                 "            {\n" +
                 "                \"employee_id\":" + userid + ",\"check_in\":\""+ time1 +"\",\"check_out\": false,\n" +
-                "                \"hr_project_id\": 2,\n" +
+                "                \"hr_project_id\": \""+ projectid +"\",\n" +
                 "                \"gps_lat_check_in\": " + lat +"\",\"gps_lang_check_in\":\""+ longi + "\",\"gps_lat_check_out\": false,\n" +
                 "                \"gps_lang_check_out\": \"false\",\n" +
                 "                \"dist_check_in\": false\n" +
@@ -186,14 +197,15 @@ public class back_home extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                SharedPreferences.Editor editor = sharedPreferences1.edit();
+                editor.putLong("milli",m);
+                editor.putLong("latitude",Double.doubleToRawLongBits(latitude));
+                editor.putLong("longitude",Double.doubleToRawLongBits(longitude));
+                editor.putString("userid",userid);
+                editor.putString("user",user);
+                editor.putString("result",result);
+                editor.apply();
                 final Intent intent1 = new Intent(back_home.this, back_home_stop.class);
-                intent1.putExtra(EXTRA_TEXT3, m);
-                intent1.putExtra(EXTRA_TEXT4,latitude);
-                intent1.putExtra(EXTRA_TEXT5,longitude);
-                intent1.putExtra(EXTRA_TEXT6,userid);
-                intent1.putExtra(EXTRA_TEXT7,result);
-                intent1.putExtra(EXTRA_TEXT8,user);
                 startActivity(intent1);
                 overridePendingTransition(0, 0);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

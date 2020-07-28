@@ -45,8 +45,6 @@ public class back_home_stop extends AppCompatActivity {
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
 
-    SharedPreferences sharedPreferences;
-
     private Button btnEnd;
 
     String userid;
@@ -59,6 +57,9 @@ public class back_home_stop extends AppCompatActivity {
 
     double longi2;
     double lat2;
+    double lat1;
+    double longi1;
+    long milli;
 
     int dist;
     String checkoutlat;
@@ -67,14 +68,25 @@ public class back_home_stop extends AppCompatActivity {
 
     String result;
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_back_home_stop);
 
-        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
-        cookie = sharedPreferences.getString("Cookie","");
-        id = sharedPreferences.getString("uid","");
+        sharedPreferences = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
+        milli = sharedPreferences.getLong("milli", Long.parseLong("0"));
+        lat1 = Double.longBitsToDouble(sharedPreferences.getLong("latitude", Double.doubleToLongBits(0)));
+        longi1 = Double.longBitsToDouble(sharedPreferences.getLong("longitude", Double.doubleToLongBits(0)));
+        userid = sharedPreferences.getString("userid","");
+        user = sharedPreferences.getString("user","");
+        result = sharedPreferences.getString("result","");
+
+        sharedPreferences1 = getSharedPreferences("Preferences",MODE_PRIVATE);
+        cookie = sharedPreferences1.getString("Cookie","");
+        id = sharedPreferences1.getString("uid","");
 
 
         requestQueue = Volley.newRequestQueue(back_home_stop.this);
@@ -89,14 +101,6 @@ public class back_home_stop extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-        Intent intent = getIntent();
-        final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
-        final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
-        final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
-        result = intent.getStringExtra(item_select.EXTRA_TEXT7);
-        userid = intent.getStringExtra(item_select.EXTRA_TEXT6);
-        user = intent.getStringExtra(item_select.EXTRA_TEXT8);
-
         Date date = new Date();
         Timestamp timestamp2 = new Timestamp(date.getTime());
         final long m = timestamp2.getTime();
@@ -110,6 +114,9 @@ public class back_home_stop extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences1.edit();
+                editor.putBoolean("journeyover",true);
+                editor.apply();
                 locationTrack = new LocationTrack(back_home_stop.this);
                 if (locationTrack.canGetLocation()) {
                     longi2 = locationTrack.getLongitude();
@@ -123,6 +130,7 @@ public class back_home_stop extends AppCompatActivity {
                     locationTrack.showSettingsAlert();
                 }
                 postData(requestQueue);
+                /*System.out.println(timer(milli));*/
 
                 final Intent intent1 = new Intent(back_home_stop.this, MainActivity.class);
                 startActivity(intent1);
@@ -177,7 +185,6 @@ public class back_home_stop extends AppCompatActivity {
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
-
     public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
                 "    \"jsonrpc\": \"2.0\",\n" +
@@ -215,10 +222,7 @@ public class back_home_stop extends AppCompatActivity {
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                locationTrack = new LocationTrack(back_home_stop.this);
-                if (locationTrack.canGetLocation()) {
-                    /*System.out.println(response);*/
-                }
+                /*System.out.println(response);*/
             }
         }, new Response.ErrorListener() {
             @Override

@@ -19,4 +19,6 @@
     <string name="starturl">http://34.87.62.211/web/dataset/call_kw/hr.attendance/create</string>
     <string name="stopurl">http://34.87.62.211/web/dataset/call_kw/hr.attendance/write</string>
     <string name="tz">Asia/Kolkata</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="pref_file_key">com.example.firstdraft.PREF_FILE_KEY</string>
 </resources>

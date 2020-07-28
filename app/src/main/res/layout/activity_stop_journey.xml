@@ -286,7 +286,7 @@
 
         <Button
             android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
+            android:layout_width="143dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
@@ -305,7 +305,7 @@
 
         <Button
             android:id="@+id/btnEnd"
-            android:layout_width="wrap_content"
+            android:layout_width="143dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"

@@ -68,18 +68,40 @@ public class stop_journey extends AppCompatActivity {
     TextView address;
     /*TextView order;*/
 
+    long milli;
+    double lat1;
+    double longi1;
+
     String result;
 
     SharedPreferences sharedPreferences;
-
+    SharedPreferences sharedPreferences1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_journey);
 
-        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
-        cookie = sharedPreferences.getString("Cookie","");
-        id = sharedPreferences.getString("uid","");
+        sharedPreferences = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
+        client = sharedPreferences.getString("Client","");
+        add = sharedPreferences.getString("address","");
+        milli = sharedPreferences.getLong("milli", Long.parseLong("0"));
+        lat1 = Double.longBitsToDouble(sharedPreferences.getLong("latitude", Double.doubleToLongBits(0)));
+        longi1 = Double.longBitsToDouble(sharedPreferences.getLong("longitude", Double.doubleToLongBits(0)));
+        userid = sharedPreferences.getString("userid","");
+        user = sharedPreferences.getString("user","");
+        result = sharedPreferences.getString("result","");
+
+        sharedPreferences1 = getSharedPreferences("Preferences",MODE_PRIVATE);
+        cookie = sharedPreferences1.getString("Cookie","");
+        id = sharedPreferences1.getString("uid","");
+
+        name = (TextView) findViewById(R.id.name);
+        cl = (TextView) findViewById(R.id.cl);
+        address = (TextView) findViewById(R.id.address);
+
+        name.setText(user);
+        cl.setText(client);
+        address.setText(add);
 
         requestQueue = Volley.newRequestQueue(stop_journey.this);
 
@@ -93,36 +115,19 @@ public class stop_journey extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-        Intent intent = getIntent();
-        client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
-        add = "Velachery, Chennai";
-        final long milli = intent.getLongExtra(item_select.EXTRA_TEXT3,0);
-        final double lat1 = intent.getDoubleExtra(item_select.EXTRA_TEXT4,0);
-        final double longi1 = intent.getDoubleExtra(item_select.EXTRA_TEXT5,0);
-        userid = intent.getStringExtra(item_select.EXTRA_TEXT6);
-        user = intent.getStringExtra(item_select.EXTRA_TEXT8);
-        result = intent.getStringExtra(item_select.EXTRA_TEXT9);
-
         Date date = new Date();
         Timestamp timestamp2 = new Timestamp(date.getTime());
         final long m = timestamp2.getTime();
         time2 = time(m);
         time1 = time(milli);
 
-        name = (TextView) findViewById(R.id.name);
-        cl = (TextView) findViewById(R.id.cl);
-        /*order = (TextView) findViewById(R.id.order);*/
-        address = (TextView) findViewById(R.id.address);
-
-        name.setText(user);
-        cl.setText(client);
-        /*order.setText(oid);*/
-        address.setText(add);
-
         Button btnEnd = (Button) this.findViewById(R.id.btnEnd);
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences1.edit();
+                editor.putBoolean("journeyover",true);
+                editor.apply();
                 locationTrack = new LocationTrack(stop_journey.this);
                 if (locationTrack.canGetLocation()) {
                     longi2 = locationTrack.getLongitude();
@@ -320,8 +325,12 @@ public class stop_journey extends AppCompatActivity {
                 .show();
     }
     @Override
-    protected void onPause() {
+    protected void onPause(){
         super.onPause();
+        /*SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("Cookie", cookie);
+        editor.putString("uid",id);
+        editor.apply();*/
     }
     @Override
     protected void onDestroy() {

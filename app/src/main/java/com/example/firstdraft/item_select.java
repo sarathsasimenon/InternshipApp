@@ -36,15 +36,12 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class item_select extends AppCompatActivity {
-    public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
-    public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
     public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
     public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
     public static final String EXTRA_TEXT7 = "com.example.firstdraft.EXTRA_TEXT7";
     public static final String EXTRA_TEXT8 = "com.example.firstdraft.EXTRA_TEXT8";
-    public static final String EXTRA_TEXT9 = "com.example.firstdraft.EXTRA_TEXT9";
 
     private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
@@ -71,13 +68,13 @@ public class item_select extends AppCompatActivity {
 
     String userid;
     String client;
+    String projectid;
     String add;
     long m;
     String user;
 
-    int flag = 0;
-
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +82,7 @@ public class item_select extends AppCompatActivity {
         setContentView(R.layout.activity_item_select);
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        sharedPreferences1 = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
 
@@ -110,24 +108,27 @@ public class item_select extends AppCompatActivity {
 
         final Intent intent = getIntent();
         client = intent.getStringExtra(MainActivity.EXTRA_TEXT);
+        projectid = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
         add = "Velachery, Chennai";
         userid = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
         user = intent.getStringExtra(MainActivity.EXTRA_TEXT5);
 
         TextView name = (TextView) findViewById(R.id.name);
         TextView cl = (TextView) findViewById(R.id.cl);
-        /*TextView order = (TextView) findViewById(R.id.order);*/
         final TextView address = (TextView) findViewById(R.id.address);
 
         name.setText(user);
         cl.setText(client);
-        /*order.setText(oid);*/
         address.setText(add);
 
         btnStart = (Button) this.findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("journeyover",false);
+                editor.putBoolean("journeyhomeover",true);
+                editor.commit();
                 locationTrack = new LocationTrack(item_select.this);
                 if (!locationTrack.canGetLocation()) {
                     locationTrack.showSettingsAlert();
@@ -166,7 +167,7 @@ public class item_select extends AppCompatActivity {
                 "                \"employee_id\":" + userid + ",\n" +
                 "                \"check_in\": \""+ time1 +"\",\n" +
                 "                \"check_out\": false,\n" +
-                "                \"hr_project_id\": 2,\n" +
+                "                \"hr_project_id\": \""+ projectid +"\",\n" +
                 "                \"gps_lat_check_in\": \""+lat+"\",\n" +
                 "                \"gps_lat_check_out\": false,\n" +
                 "                \"gps_lang_check_in\": \""+longi+"\",\n" +
@@ -206,16 +207,17 @@ public class item_select extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                SharedPreferences.Editor editor = sharedPreferences1.edit();
+                editor.putString("Client", client);
+                editor.putLong("milli",m);
+                editor.putString("address",add);
+                editor.putLong("latitude",Double.doubleToRawLongBits(latitude));
+                editor.putLong("longitude",Double.doubleToRawLongBits(longitude));
+                editor.putString("userid",userid);
+                editor.putString("user",user);
+                editor.putString("result",result);
+                editor.apply();
                 final Intent intent1 = new Intent(item_select.this, stop_journey.class);
-                intent1.putExtra(EXTRA_TEXT, client);
-                intent1.putExtra(EXTRA_TEXT2, add);
-                intent1.putExtra(EXTRA_TEXT3, m);
-                intent1.putExtra(EXTRA_TEXT4,latitude);
-                intent1.putExtra(EXTRA_TEXT5,longitude);
-                intent1.putExtra(EXTRA_TEXT6,userid);
-                intent1.putExtra(EXTRA_TEXT8,user);
-                intent1.putExtra(EXTRA_TEXT9,result);
                 startActivity(intent1);
                 overridePendingTransition(0, 0);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

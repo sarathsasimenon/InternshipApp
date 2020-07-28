@@ -2,8 +2,9 @@ package com.example.firstdraft;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,7 +12,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT = "com.example.firstdraft.EXTRA_TEXT";
     public static final String EXTRA_TEXT2 = "com.example.firstdraft.EXTRA_TEXT2";
     public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
+    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
     public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
 
     private long backPressedTime;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     String userid;
     String user;
+    String projectid;
+    String pid;
     String project;
 
     TextView name;
@@ -50,12 +53,12 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue1;
 
     ArrayList<String> al = new ArrayList<>();
+    ArrayList<String> al2 = new ArrayList<>();
 
     SharedPreferences sharedPreferences;
 
     private Spinner dropdown;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("uid", uid);
-        editor.commit();
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
 
         al.add("Choose a destination");
+        al2.add("Project ids");
         postData1(requestQueue1);
 
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -88,18 +88,24 @@ public class MainActivity extends AppCompatActivity {
                         // do nothing
                     } else {
                         String s = parent.getItemAtPosition(position).toString();
-                        if (s.equals("Head Office")) {
+                        if (s.equals("home")) {
+                            int j = al.indexOf(s);
+                            pid = al2.get(j);
                             Intent intent2 = new Intent(MainActivity.this,back_home.class);
                             intent2.putExtra(EXTRA_TEXT3,userid);
+                            intent2.putExtra(EXTRA_TEXT4,pid);
                             intent2.putExtra(EXTRA_TEXT5,user);
                             startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                         else {
+                            int j = al.indexOf(s);
+                            pid = al2.get(j);
                             Intent intent = new Intent(MainActivity.this, item_select.class);
                             intent.putExtra(EXTRA_TEXT, s);
                             /*intent.putExtra(EXTRA_TEXT2, address);*/
                             intent.putExtra(EXTRA_TEXT3,userid);
+                            intent.putExtra(EXTRA_TEXT4,pid);
                             intent.putExtra(EXTRA_TEXT5,user);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -129,6 +135,32 @@ public class MainActivity extends AppCompatActivity {
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.signout) {
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+            logout();
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public void logout(){
+        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("loggedin",false);
+        System.out.println("Logged Out");
+        editor.apply();
     }
     public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
@@ -242,8 +274,10 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject obj = response.getJSONObject("result");
                     JSONArray arr = obj.getJSONArray("records");
                     for(int i=0;i<arr.length();i++){
+                        projectid = arr.getJSONObject(i).getString("id");
                         project = arr.getJSONObject(i).getString("name");
                         al.add(project);
+                        al2.add(projectid);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
