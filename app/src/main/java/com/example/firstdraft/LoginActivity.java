@@ -124,10 +124,20 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         if(k.equals("result")) {
                             Toast.makeText(getApplicationContext(), "Logging In", Toast.LENGTH_SHORT).show();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            int flag1 = 10;
+                            editor.putBoolean("loggedin",true);
+                            editor.putBoolean("journeyover",true);
+                            editor.putBoolean("journeyhomeover",true);
+                            editor.putInt("flag",flag1);
+                            editor.apply();
                             openDashboard();
                         }
                         else{
                             Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
+                            int flag1 = 100;
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("flag",flag1);
                         }
                     }
                 },

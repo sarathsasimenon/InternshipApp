@@ -25,7 +25,6 @@ public class SplashActivity extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         flag1 = sharedPreferences.getInt("flag",100);
         if (flag1==100){
-
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -35,12 +34,12 @@ public class SplashActivity extends Activity {
                     finish();
                 }
             },2000);
-            flag1 = 10;
+            /*flag1 = 10;
             editor.putBoolean("loggedin",true);
             editor.putBoolean("journeyover",true);
             editor.putBoolean("journeyhomeover",true);
             editor.putInt("flag",flag1);
-            editor.apply();
+            editor.apply();*/
         }
         else{
 
@@ -97,10 +96,10 @@ public class SplashActivity extends Activity {
                         finish();
                     }
                 },2000);
-                editor.putBoolean("loggedin",true);
+                /*editor.putBoolean("loggedin",true);
                 editor.putBoolean("journeyover",true);
                 editor.putBoolean("journeyhomeover",true);
-                editor.apply();
+                editor.apply();*/
             }
             if (flag==4){
                 handler.postDelayed(new Runnable() {
