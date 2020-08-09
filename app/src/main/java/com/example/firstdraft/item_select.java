@@ -23,7 +23,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -101,9 +100,10 @@ public class item_select extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Date date = new Date();
+        /*Date date = new Date();
         Timestamp timestamp1 = new Timestamp(date.getTime());
-        m = timestamp1.getTime();
+        m = timestamp1.getTime();*/
+        m = System.currentTimeMillis();
         time1 = time(m);
 
         final Intent intent = getIntent();

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,8 +19,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,9 +39,9 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class back_home_stop extends AppCompatActivity {
-    private ArrayList permissionsToRequest;
+    private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
-    private ArrayList permissions = new ArrayList();
+    private ArrayList<String> permissions = new ArrayList<>();
 
     RequestQueue requestQueue;
 
@@ -59,6 +62,7 @@ public class back_home_stop extends AppCompatActivity {
     double lat2;
     double lat1;
     double longi1;
+    long m;
     long milli;
 
     int dist;
@@ -101,9 +105,7 @@ public class back_home_stop extends AppCompatActivity {
                 requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
         }
 
-        Date date = new Date();
-        Timestamp timestamp2 = new Timestamp(date.getTime());
-        final long m = timestamp2.getTime();
+        m = System.currentTimeMillis();
         time2 = time(m);
         time1 = time(milli);
 
@@ -114,22 +116,28 @@ public class back_home_stop extends AppCompatActivity {
         btnEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedPreferences1.edit();
-                editor.putBoolean("journeyover",true);
-                editor.apply();
                 locationTrack = new LocationTrack(back_home_stop.this);
                 if (locationTrack.canGetLocation()) {
                     longi2 = locationTrack.getLongitude();
                     lat2 = locationTrack.getLatitude();
                     checkoutlat = Double.toString(lat2);
                     checkoutlong = Double.toString(longi2);
-
-                    dist = distance(lat1,lat2,longi1,longi2);
                 }
                 else {
                     locationTrack.showSettingsAlert();
                 }
-                postData(requestQueue);
+                distance(lat1,longi1,lat2,longi2);
+                SharedPreferences.Editor editor = sharedPreferences1.edit();
+                editor.putBoolean("journeyhomeover",true);
+                editor.apply();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        postData(requestQueue);
+                    }
+                },1500);
                 /*System.out.println(timer(milli));*/
 
                 final Intent intent1 = new Intent(back_home_stop.this, MainActivity.class);
@@ -164,20 +172,73 @@ public class back_home_stop extends AppCompatActivity {
         int h   = (int) ((m / (1000*60*60)) % 24);
         return String.format("%02d:%02d:%02d", h,min,s);
     }
-    public int distance(double lat1,double lat2,double long1,double long2){
-        if((lat1==lat2) && (long1==long2)){
-            return (0);
+    public void distance(double lat1,double long1,double lat2,double long2){
+        // Google Maps Distance Matrix API
+
+        /*RequestQueue requestQueue2 = Volley.newRequestQueue(this);
+        String apiKey = "AIzaSyBVFCmDp3hmNldDpCXtPc6LtS2c0U3rs2o";
+        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+lat1+","+long1+"&destinations="+lat2+","+long2+"&key="+apiKey;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    try {
+                        dist = (int) response.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0).getJSONObject("distance").get("value");
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+        requestQueue2.add(jsonObjectRequest);*/
+
+        // Open Route Service API
+
+        String obj = "{\"locations\":[[" + long1 + "," + lat1 +"],[" + long2+ "," + lat2 + "]],\"metrics\":[\"distance\"],\"units\":\"km\"}";
+        JSONObject object = null;
+        try {
+            object = new JSONObject(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        else{
-            double theta = long1 - long2;
-            double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-            dist = Math.acos(dist);
-            dist = rad2deg(dist);
-            dist = dist * 60 * 1.1515;
-            dist = dist * 1.609344;
-            int dis = (int)dist;
-            return(dis) ;
-        }
+        RequestQueue requestQueue2 = Volley.newRequestQueue(this);
+        String url = "https://api.openrouteservice.org/v2/matrix/driving-car" ;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    try {
+                        JSONArray arr = response.getJSONArray("distances");
+                        JSONArray arr2 = arr.getJSONArray(0);
+                        dist = arr2.getInt(1);
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "5b3ce3597851110001cf6248f06f715ad4394da8bd2d16448e3e53cb");
+                headers.put("Accept", "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8");
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        requestQueue2.add(jsonObjectRequest);
     }
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);

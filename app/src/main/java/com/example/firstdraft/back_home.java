@@ -156,7 +156,7 @@ public class back_home extends AppCompatActivity {
                 "            {\n" +
                 "                \"employee_id\":" + userid + ",\"check_in\":\""+ time1 +"\",\"check_out\": false,\n" +
                 "                \"hr_project_id\": \""+ projectid +"\",\n" +
-                "                \"gps_lat_check_in\": " + lat +"\",\"gps_lang_check_in\":\""+ longi + "\",\"gps_lat_check_out\": false,\n" +
+                "                \"gps_lat_check_in\": " + lat +",\"gps_lang_check_in\":"+ longi + ",\"gps_lat_check_out\": false,\n" +
                 "                \"gps_lang_check_out\": \"false\",\n" +
                 "                \"dist_check_in\": false\n" +
                 "            }\n" +

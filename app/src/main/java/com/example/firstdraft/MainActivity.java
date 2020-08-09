@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         // do nothing
                     } else {
                         String s = parent.getItemAtPosition(position).toString();
-                        if (s.equals("home")) {
+                        if (s.equals("Home Office")) {
                             int j = al.indexOf(s);
                             pid = al2.get(j);
                             Intent intent2 = new Intent(MainActivity.this,back_home.class);
