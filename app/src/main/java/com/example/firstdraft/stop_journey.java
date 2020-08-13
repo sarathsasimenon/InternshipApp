@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,6 +43,7 @@ public class stop_journey extends AppCompatActivity {
     private ArrayList<String> permissions = new ArrayList<>();
 
     RequestQueue requestQueue;
+    /*RequestQueue requestQueue2;*/
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
@@ -61,7 +61,7 @@ public class stop_journey extends AppCompatActivity {
     double longi2;
     double lat2;
 
-    int dist;
+    double dist;
     String checkoutlat;
     String checkoutlong;
     String id;
@@ -80,6 +80,7 @@ public class stop_journey extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferences1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +109,7 @@ public class stop_journey extends AppCompatActivity {
         address.setText(add);
 
         requestQueue = Volley.newRequestQueue(stop_journey.this);
+       /* requestQueue2 = Volley.newRequestQueue(stop_journey.this);*/
 
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
@@ -138,17 +140,18 @@ public class stop_journey extends AppCompatActivity {
                     locationTrack.showSettingsAlert();
                 }
                 distance(lat1,longi1,lat2,longi2);
+
                 SharedPreferences.Editor editor = sharedPreferences1.edit();
                 editor.putBoolean("journeyover",true);
                 editor.apply();
 
-                Handler handler = new Handler();
+                /*Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         postData(requestQueue);
                     }
-                },1500);
+                },1500);*/
                 /*postData(requestQueue);*/
                 /*System.out.println(timer(milli));*/
 
@@ -187,7 +190,7 @@ public class stop_journey extends AppCompatActivity {
     public void distance(double lat1,double long1,double lat2,double long2){
         // Google Maps Distance Matrix API
 
-        /*RequestQueue requestQueue2 = Volley.newRequestQueue(this);
+        /*
         String apiKey = "AIzaSyBVFCmDp3hmNldDpCXtPc6LtS2c0U3rs2o";
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+lat1+","+long1+"&destinations="+lat2+","+long2+"&key="+apiKey;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -211,24 +214,24 @@ public class stop_journey extends AppCompatActivity {
         requestQueue2.add(jsonObjectRequest);*/
 
         // Open Route Service API
-
-        String obj = "{\"locations\":[[" + long1 + "," + lat1 +"],[" + long2+ "," + lat2 + "]],\"metrics\":[\"distance\"],\"units\":\"km\"}";
+        final String obj = "{\"locations\":[[" + long1 + "," + lat1 +"],[" + long2+ "," + lat2 + "]],\"metrics\":[\"distance\"],\"units\":\"km\"}";
         JSONObject object = null;
         try {
             object = new JSONObject(obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue requestQueue2 = Volley.newRequestQueue(this);
-        String url = "https://api.openrouteservice.org/v2/matrix/driving-car" ;
+        String url = "https://api.openrouteservice.org/v2/matrix/driving-car";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                System.out.println(response);
                 if (response != null) {
                     try {
                         JSONArray arr = response.getJSONArray("distances");
                         JSONArray arr2 = arr.getJSONArray(0);
-                        dist = arr2.getInt(1);
+                        dist = arr2.getDouble(1);
+                        postData(requestQueue);
                     }
                     catch (JSONException e) {
                         e.printStackTrace();
@@ -250,13 +253,7 @@ public class stop_journey extends AppCompatActivity {
                 return headers;
             }
         };
-        requestQueue2.add(jsonObjectRequest);
-    }
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+        requestQueue.add(jsonObjectRequest);
     }
 
     public void postData(RequestQueue requestQueue) {
@@ -292,12 +289,11 @@ public class stop_journey extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String stopurl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/write";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /*System.out.println(response);*/
+                System.out.println(response);
             }
         }, new Response.ErrorListener() {
             @Override

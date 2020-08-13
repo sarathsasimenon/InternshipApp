@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -65,7 +64,7 @@ public class back_home_stop extends AppCompatActivity {
     long m;
     long milli;
 
-    int dist;
+    double dist;
     String checkoutlat;
     String checkoutlong;
     String id;
@@ -131,13 +130,6 @@ public class back_home_stop extends AppCompatActivity {
                 editor.putBoolean("journeyhomeover",true);
                 editor.apply();
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        postData(requestQueue);
-                    }
-                },1500);
                 /*System.out.println(timer(milli));*/
 
                 final Intent intent1 = new Intent(back_home_stop.this, MainActivity.class);
@@ -199,24 +191,25 @@ public class back_home_stop extends AppCompatActivity {
         requestQueue2.add(jsonObjectRequest);*/
 
         // Open Route Service API
-
-        String obj = "{\"locations\":[[" + long1 + "," + lat1 +"],[" + long2+ "," + lat2 + "]],\"metrics\":[\"distance\"],\"units\":\"km\"}";
+        final String obj = "{\"locations\":[[" + long1 + "," + lat1 +"],[" + long2+ "," + lat2 + "]],\"metrics\":[\"distance\"],\"units\":\"km\"}";
         JSONObject object = null;
         try {
             object = new JSONObject(obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue requestQueue2 = Volley.newRequestQueue(this);
-        String url = "https://api.openrouteservice.org/v2/matrix/driving-car" ;
+        String url = "https://api.openrouteservice.org/v2/matrix/driving-car";
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                System.out.println(response);
                 if (response != null) {
                     try {
                         JSONArray arr = response.getJSONArray("distances");
                         JSONArray arr2 = arr.getJSONArray(0);
-                        dist = arr2.getInt(1);
+                        dist = arr2.getDouble(1);
+                        postData(requestQueue);
                     }
                     catch (JSONException e) {
                         e.printStackTrace();
@@ -238,13 +231,7 @@ public class back_home_stop extends AppCompatActivity {
                 return headers;
             }
         };
-        requestQueue2.add(jsonObjectRequest);
-    }
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+        requestQueue.add(jsonObjectRequest);
     }
     public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
