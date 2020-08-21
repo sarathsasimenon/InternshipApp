@@ -30,23 +30,33 @@
         android:roundIcon="@mipmap/logo1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
-        <activity android:name=".LoginActivity"/>
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".LoginActivity" />
+
         <activity android:name=".MainActivity" />
+
+        <activity android:name=".AttendanceActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".StopAttendance"
+            android:alwaysRetainTaskState="true"
+            android:exported="true"/>
+
         <activity
             android:name=".item_select"
             android:exported="true"

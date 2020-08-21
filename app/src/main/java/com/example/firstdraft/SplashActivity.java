@@ -14,6 +14,7 @@ public class SplashActivity extends Activity {
     boolean loggedin;
     boolean journeyover;
     boolean journeyhomeover;
+    boolean checkedout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,35 +35,33 @@ public class SplashActivity extends Activity {
                     finish();
                 }
             },2000);
-            /*flag1 = 10;
-            editor.putBoolean("loggedin",true);
-            editor.putBoolean("journeyover",true);
-            editor.putBoolean("journeyhomeover",true);
-            editor.putInt("flag",flag1);
-            editor.apply();*/
         }
         else{
-
             loggedin = sharedPreferences.getBoolean("loggedin", false);
             journeyover = sharedPreferences.getBoolean("journeyover",true);
             journeyhomeover = sharedPreferences.getBoolean("journeyhomeover",true);
+            checkedout = sharedPreferences.getBoolean("checkedout",true);
 
             System.out.println("Flag:"+flag1);
             System.out.println("Login:"+loggedin);
             System.out.println("Journey:"+journeyover);
             System.out.println("Journey Home:"+journeyhomeover);
+            System.out.println("Checked Out:"+checkedout);
 
-            if (journeyover && loggedin && journeyhomeover) {
+            if (journeyover && loggedin && journeyhomeover && checkedout) {
                 flag = 1;
             }
-            if (!journeyover && loggedin && journeyhomeover) {
+            if (!journeyover && loggedin && journeyhomeover && checkedout) {
                 flag = 2;
             }
-            if(journeyover && !loggedin && journeyhomeover){
+            if(journeyover && !loggedin && journeyhomeover && checkedout){
                 flag = 3;
             }
-            if (journeyover && loggedin && !journeyhomeover) {
+            if (journeyover && loggedin && !journeyhomeover & checkedout) {
                 flag = 4;
+            }
+            if (journeyover && loggedin && journeyhomeover & !checkedout) {
+                flag = 5;
             }
             if (flag == 1){
                 handler.postDelayed(new Runnable() {
@@ -96,16 +95,23 @@ public class SplashActivity extends Activity {
                         finish();
                     }
                 },2000);
-                /*editor.putBoolean("loggedin",true);
-                editor.putBoolean("journeyover",true);
-                editor.putBoolean("journeyhomeover",true);
-                editor.apply();*/
             }
             if (flag==4){
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(SplashActivity.this, back_home_stop.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                },2000);
+            }
+            if (flag==5){
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(SplashActivity.this, StopAttendance.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

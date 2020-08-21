@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -144,17 +145,7 @@ public class stop_journey extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences1.edit();
                 editor.putBoolean("journeyover",true);
                 editor.apply();
-
-                /*Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        postData(requestQueue);
-                    }
-                },1500);*/
-                /*postData(requestQueue);*/
-                /*System.out.println(timer(milli));*/
-
+                Toast.makeText(getApplicationContext(), "Journey recorded.", Toast.LENGTH_SHORT).show();
                 final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right);
@@ -386,10 +377,6 @@ public class stop_journey extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        /*SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("Cookie", cookie);
-        editor.putString("uid",id);
-        editor.apply();*/
     }
     @Override
     protected void onDestroy() {

@@ -36,13 +36,6 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class back_home extends AppCompatActivity {
-    public static final String EXTRA_TEXT3 = "com.example.firstdraft.EXTRA_TEXT3";
-    public static final String EXTRA_TEXT4 = "com.example.firstdraft.EXTRA_TEXT4";
-    public static final String EXTRA_TEXT5 = "com.example.firstdraft.EXTRA_TEXT5";
-    public static final String EXTRA_TEXT6 = "com.example.firstdraft.EXTRA_TEXT6";
-    public static final String EXTRA_TEXT7 = "com.example.firstdraft.EXTRA_TEXT7";
-    public static final String EXTRA_TEXT8 = "com.example.firstdraft.EXTRA_TEXT8";
-
     private ArrayList<Object> permissionsToRequest;
     private ArrayList permissionsRejected = new ArrayList();
     private ArrayList<String> permissions = new ArrayList<>();

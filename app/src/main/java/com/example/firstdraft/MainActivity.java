@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
 
-        al.add("Choose a destination");
+        al.add("What would you like to do?");
         al2.add("Project ids");
         postData1(requestQueue1);
 
@@ -98,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
+                        if (s.equals("Attendance")) {
+                            int j = al.indexOf(s);
+                            pid = al2.get(j);
+                            Intent intent2 = new Intent(MainActivity.this,AttendanceActivity.class);
+                            intent2.putExtra(EXTRA_TEXT3,userid);
+                            intent2.putExtra(EXTRA_TEXT4,pid);
+                            intent2.putExtra(EXTRA_TEXT5,user);
+                            startActivity(intent2);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
                         else {
                             int j = al.indexOf(s);
                             pid = al2.get(j);
@@ -110,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("user",user);
+                        editor.apply();
                     }
                 }
             }

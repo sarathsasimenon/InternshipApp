@@ -129,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putBoolean("loggedin",true);
                             editor.putBoolean("journeyover",true);
                             editor.putBoolean("journeyhomeover",true);
+                            editor.putBoolean("checkedout",true);
                             editor.putInt("flag",flag1);
                             editor.apply();
                             openDashboard();

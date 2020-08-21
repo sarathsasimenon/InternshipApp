@@ -110,8 +110,8 @@
 
         <Button
             android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="63dp"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
             android:text="@string/start"
@@ -129,8 +129,8 @@
 
         <Button
             android:id="@+id/btnEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="65dp"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
             android:text="@string/end"
