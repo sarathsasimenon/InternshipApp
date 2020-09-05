@@ -3,8 +3,6 @@ package com.example.firstdraft;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,14 +65,22 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
+        user = sharedPreferences.getString("user","");
 
-        requestQueue = Volley.newRequestQueue(MainActivity.this);
+//        requestQueue = Volley.newRequestQueue(MainActivity.this);
+//
+//        postData(requestQueue);
 
-        postData(requestQueue);
+        final Intent intent = getIntent();
+        user = intent.getStringExtra(FirstActivity.EXTRA_TEXT);
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(user);
 
         dropdown = (Spinner) findViewById(R.id.dropdown);
 
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         al.add("What would you like to do?");
         al2.add("Project ids");
@@ -98,16 +104,17 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent2);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
-                        if (s.equals("Attendance")) {
-                            int j = al.indexOf(s);
-                            pid = al2.get(j);
-                            Intent intent2 = new Intent(MainActivity.this,AttendanceActivity.class);
-                            intent2.putExtra(EXTRA_TEXT3,userid);
-                            intent2.putExtra(EXTRA_TEXT4,pid);
-                            intent2.putExtra(EXTRA_TEXT5,user);
-                            startActivity(intent2);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        }
+//                        if (s.equals("Attendance")) {
+////                            int j = al.indexOf(s);
+////                            pid = al2.get(j);
+////                            Intent intent2 = new Intent(MainActivity.this,AttendanceActivity.class);
+////                            intent2.putExtra(EXTRA_TEXT3,userid);
+////                            intent2.putExtra(EXTRA_TEXT4,pid);
+////                            intent2.putExtra(EXTRA_TEXT5,user);
+////                            startActivity(intent2);
+////                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                            continue;
+//                        }
                         else {
                             int j = al.indexOf(s);
                             pid = al2.get(j);
@@ -134,113 +141,101 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        if(backPressedTime + 2000 > System.currentTimeMillis()){
-            backToast.cancel();
-            Intent a = new Intent(Intent.ACTION_MAIN);
-            a.addCategory(Intent.CATEGORY_HOME);
-            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(a);
-            onPause();
-            return;
-        }
-        else{
-            backToast = Toast.makeText(getBaseContext(),"Press back again to exit",Toast.LENGTH_SHORT);
-            backToast.show();
-        }
-        backPressedTime = System.currentTimeMillis();
+        Intent intent = new Intent(MainActivity.this,FirstActivity.class);
+        startActivity(intent);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.signout) {
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-            startActivity(intent);
-            logout();
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    public void logout(){
-        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("loggedin",false);
-        System.out.println("Logged Out");
-        editor.apply();
-    }
-    public void postData(RequestQueue requestQueue) {
-        String obj = "{\n" +
-                "    \"jsonrpc\": \"2.0\",\n" +
-                "    \"method\": \"call\",\n" +
-                "    \"params\": {\n" +
-                "        \"args\": [\n" +
-                "            [\n" +
-                "                [\n" +
-                "                    \"user_id\",\n" +
-                "                    \"=\",\n" +
-                                       uid +
-                "                ]\n" +
-                "            ],\n" +
-                "            [\n" +
-                "                \"attendance_state\",\n" +
-                "                \"name\"\n" +
-                "            ]\n" +
-                "        ],\n" +
-                "        \"model\": \"hr.employee\",\n" +
-                "        \"method\": \"search_read\",\n" +
-                "        \"kwargs\": {}\n" +
-                "    },\n" +
-                "    \"id\": 49458607\n" +
-                "}";
-        JSONObject object = null;
-        try {
-            object = new JSONObject(obj);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String nameurl = "http://34.87.169.30/web/dataset/call_kw/hr.employee/search_read";
-        CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                /*System.out.println(response);*/
-                try {
-                    JSONArray arr = response.getJSONArray("result");
-                    JSONObject obj = arr.getJSONObject(0);
-                    userid = obj.getString("id");
-                    user = obj.getString("name");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                name = (TextView) findViewById(R.id.name);
-                name.setText(user);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Cookie",cookie);
-                return headers;
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
-        };
-        requestQueue.add(customRequest);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.signout) {
+//            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+//            startActivity(intent);
+//            logout();
+//            finish();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//    public void logout(){
+//        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean("loggedin",false);
+//        System.out.println("Logged Out");
+//        editor.apply();
+//    }
+//    public void postData(RequestQueue requestQueue) {
+//        String obj = "{\n" +
+//                "    \"jsonrpc\": \"2.0\",\n" +
+//                "    \"method\": \"call\",\n" +
+//                "    \"params\": {\n" +
+//                "        \"args\": [\n" +
+//                "            [\n" +
+//                "                [\n" +
+//                "                    \"user_id\",\n" +
+//                "                    \"=\",\n" +
+//                                       uid +
+//                "                ]\n" +
+//                "            ],\n" +
+//                "            [\n" +
+//                "                \"attendance_state\",\n" +
+//                "                \"name\"\n" +
+//                "            ]\n" +
+//                "        ],\n" +
+//                "        \"model\": \"hr.employee\",\n" +
+//                "        \"method\": \"search_read\",\n" +
+//                "        \"kwargs\": {}\n" +
+//                "    },\n" +
+//                "    \"id\": 49458607\n" +
+//                "}";
+//        JSONObject object = null;
+//        try {
+//            object = new JSONObject(obj);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String nameurl = "http://34.87.169.30/web/dataset/call_kw/hr.employee/search_read";
+//        CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                /*System.out.println(response);*/
+//                try {
+//                    JSONArray arr = response.getJSONArray("result");
+//                    JSONObject obj = arr.getJSONObject(0);
+//                    userid = obj.getString("id");
+//                    user = obj.getString("name");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                name = (TextView) findViewById(R.id.name);
+//                name.setText(user);
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                System.out.println(error);
+//            }
+//        }) {
+//            @Override
+//            public Map<String, String> getHeaders() {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Content-Type", "application/json");
+//                headers.put("Cookie",cookie);
+//                return headers;
+//            }
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json";
+//            }
+//        };
+//        requestQueue.add(customRequest);
+//    }
 
     public void postData1(RequestQueue requestQueue) {
         String obj = "{\n" +
@@ -295,6 +290,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                al.remove("Attendance");
+                al2.remove("4");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, al);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dropdown.setAdapter(adapter);

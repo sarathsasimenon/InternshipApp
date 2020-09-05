@@ -49,7 +49,7 @@ public class AttendanceActivity extends AppCompatActivity {
         sharedPreferences1 = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
-        user = sharedPreferences.getString("user","");
+//        user = sharedPreferences.getString("user","");
 
         requestQueue = Volley.newRequestQueue(AttendanceActivity.this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,8 +58,9 @@ public class AttendanceActivity extends AppCompatActivity {
         time1 = time(m);
 
         final Intent intent = getIntent();
-        projectid = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
-        userid = intent.getStringExtra(MainActivity.EXTRA_TEXT3);
+//        projectid = intent.getStringExtra(MainActivity.EXTRA_TEXT4);
+        user = intent.getStringExtra(FirstActivity.EXTRA_TEXT);
+        userid = intent.getStringExtra(FirstActivity.EXTRA_TEXT2);
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(user);
@@ -83,7 +84,7 @@ public class AttendanceActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(AttendanceActivity.this,MainActivity.class);
+        Intent intent = new Intent(AttendanceActivity.this,FirstActivity.class);
         startActivity(intent);
     }
     public String time(long milliseconds) {
@@ -100,7 +101,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 "        \"args\": [\n" +
                 "            {\n" +
                 "                \"employee_id\":" + userid + ",\"check_in\":\""+ time1 +"\",\"check_out\": false,\n" +
-                "                \"hr_project_id\": \""+ projectid +"\"\n" +
+                "                \"hr_project_id\": \""+ 4 +"\"\n" +
                 "            }\n" +
                 "        ],\n" +
                 "        \"model\": \"hr.attendance\",\n" +

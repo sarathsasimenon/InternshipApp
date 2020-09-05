@@ -67,7 +67,7 @@ public class SplashActivity extends Activity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent1 = new Intent(SplashActivity.this, MainActivity.class);
+                        Intent intent1 = new Intent(SplashActivity.this, FirstActivity.class);
                         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent1);
                         finish();

@@ -132,7 +132,7 @@ public class back_home_stop extends AppCompatActivity {
 
                 /*System.out.println(timer(milli));*/
 
-                final Intent intent1 = new Intent(back_home_stop.this, MainActivity.class);
+                final Intent intent1 = new Intent(back_home_stop.this, FirstActivity.class);
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right);
             }

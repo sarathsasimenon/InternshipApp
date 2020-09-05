@@ -146,7 +146,7 @@ public class stop_journey extends AppCompatActivity {
                 editor.putBoolean("journeyover",true);
                 editor.apply();
                 Toast.makeText(getApplicationContext(), "Journey recorded.", Toast.LENGTH_SHORT).show();
-                final Intent intent1 = new Intent(stop_journey.this, MainActivity.class);
+                final Intent intent1 = new Intent(stop_journey.this, FirstActivity.class);
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right);
             }

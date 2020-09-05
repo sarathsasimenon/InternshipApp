@@ -78,7 +78,7 @@ public class StopAttendance extends AppCompatActivity {
                 editor.putBoolean("checkedout",true);
                 editor.apply();
                 Toast.makeText(getApplicationContext(), "Attendance logged.", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(StopAttendance.this,MainActivity.class);
+                Intent intent2 = new Intent(StopAttendance.this,FirstActivity.class);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right);
             }

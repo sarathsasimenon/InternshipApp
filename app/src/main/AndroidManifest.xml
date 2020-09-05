@@ -45,18 +45,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".LoginActivity" />
-
-        <activity android:name=".MainActivity" />
-
-        <activity android:name=".AttendanceActivity"
+        <activity android:name=".FirstActivity"/>
+        <activity
+            android:name=".MainActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".StopAttendance"
+            android:parentActivityName=".FirstActivity"/>
+        <activity
+            android:name=".AttendanceActivity"
+            android:exported="true"
+            android:parentActivityName=".FirstActivity" />
+        <activity
+            android:name=".StopAttendance"
             android:alwaysRetainTaskState="true"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".item_select"
             android:exported="true"
