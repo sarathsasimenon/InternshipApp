@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         user = intent.getStringExtra(FirstActivity.EXTRA_TEXT);
+        userid = intent.getStringExtra(FirstActivity.EXTRA_TEXT2);
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(user);

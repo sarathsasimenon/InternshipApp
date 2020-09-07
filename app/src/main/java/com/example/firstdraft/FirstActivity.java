@@ -80,6 +80,7 @@ public class FirstActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent2 = new Intent(FirstActivity.this, MainActivity.class);
                 intent2.putExtra(EXTRA_TEXT,user);
+                intent2.putExtra(EXTRA_TEXT2,userid);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

@@ -197,6 +197,7 @@ public class item_select extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+//        System.out.println(object);
         String starturl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/create";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
