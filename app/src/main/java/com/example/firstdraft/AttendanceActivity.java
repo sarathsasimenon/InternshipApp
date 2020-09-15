@@ -28,6 +28,7 @@ import java.util.TimeZone;
 public class AttendanceActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     String cookie;
+    String baseurl;
     private Button checkin;
     String time1;
     long m;
@@ -47,6 +48,7 @@ public class AttendanceActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
         sharedPreferences1 = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
+        baseurl = sharedPreferences.getString("baseurl","");
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
 //        user = sharedPreferences.getString("user","");
@@ -124,7 +126,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 "    \"id\": 313482682\n" +
                 "}";
         JSONObject object = new JSONObject(obj);
-        String starturl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/create";
+        String starturl = baseurl+"/web/dataset/call_kw/hr.attendance/create";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

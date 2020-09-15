@@ -49,6 +49,7 @@ public class item_select extends AppCompatActivity {
     RequestQueue requestQueue;
 
     String uid;
+    String baseurl;
     String cookie;
 
     private final static int ALL_PERMISSIONS_RESULT = 101;
@@ -82,6 +83,7 @@ public class item_select extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
         sharedPreferences1 = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
+        baseurl = sharedPreferences.getString("baseurl","");
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
 
@@ -198,7 +200,7 @@ public class item_select extends AppCompatActivity {
             e.printStackTrace();
         }
 //        System.out.println(object);
-        String starturl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/create";
+        String starturl = baseurl+"/web/dataset/call_kw/hr.attendance/create";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

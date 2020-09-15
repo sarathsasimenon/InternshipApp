@@ -49,6 +49,7 @@ public class stop_journey extends AppCompatActivity {
     private final static int ALL_PERMISSIONS_RESULT = 101;
     LocationTrack locationTrack;
 
+    String baseurl;
     String cookie;
 
     String userid;
@@ -98,6 +99,7 @@ public class stop_journey extends AppCompatActivity {
         result = sharedPreferences.getString("result","");
 
         sharedPreferences1 = getSharedPreferences("Preferences",MODE_PRIVATE);
+        baseurl = sharedPreferences1.getString("baseurl","");
         cookie = sharedPreferences1.getString("Cookie","");
         id = sharedPreferences1.getString("uid","");
 
@@ -280,7 +282,7 @@ public class stop_journey extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String stopurl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/write";
+        String stopurl = baseurl+"/web/dataset/call_kw/hr.attendance/write";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

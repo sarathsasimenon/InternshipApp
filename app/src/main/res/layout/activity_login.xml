@@ -33,6 +33,44 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.42" />
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="259dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:alpha="1"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline1"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints,NotSibling">
+
+        <Spinner
+            android:id="@+id/dropdown"
+            android:layout_width="246dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:prompt="@string/choose"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:contentDescription="@string/todo"
+            android:src="@mipmap/drop" />
+
+    </RelativeLayout>
+
     <EditText
         android:id="@+id/username"
         android:layout_width="259dp"
@@ -50,7 +88,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline1"
         app:layout_constraintBottom_toTopOf="@id/guideline2"
-        app:layout_constraintVertical_bias="0.2"/>
+        app:layout_constraintVertical_bias="0.23"/>
 
     <EditText
         android:id="@+id/password"
@@ -69,7 +107,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline1"
         app:layout_constraintBottom_toTopOf="@id/guideline2"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.42" />
 
     <Button
         android:id="@+id/login"

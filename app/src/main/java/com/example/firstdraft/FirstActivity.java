@@ -35,6 +35,7 @@ public class FirstActivity extends AppCompatActivity {
     private long backPressedTime;
     private Toast backToast;
 
+    String baseurl;
     String cookie;
     String uid;
 
@@ -57,6 +58,7 @@ public class FirstActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first);
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        baseurl = sharedPreferences.getString("baseurl","");
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
 
@@ -161,7 +163,7 @@ public class FirstActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String nameurl = "http://34.87.169.30/web/dataset/call_kw/hr.employee/search_read";
+        String nameurl = baseurl+"/web/dataset/call_kw/hr.employee/search_read";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

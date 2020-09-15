@@ -52,6 +52,7 @@ public class back_home_stop extends AppCompatActivity {
     String userid;
     String user;
 
+    String baseurl;
     String cookie;
 
     String time1;
@@ -88,6 +89,7 @@ public class back_home_stop extends AppCompatActivity {
         result = sharedPreferences.getString("result","");
 
         sharedPreferences1 = getSharedPreferences("Preferences",MODE_PRIVATE);
+        baseurl = sharedPreferences1.getString("baseurl","");
         cookie = sharedPreferences1.getString("Cookie","");
         id = sharedPreferences1.getString("uid","");
 
@@ -266,7 +268,7 @@ public class back_home_stop extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String stopurl = "http://34.87.169.30/web/dataset/call_kw/hr.attendance/write";
+        String stopurl = baseurl+"/web/dataset/call_kw/hr.attendance/write";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

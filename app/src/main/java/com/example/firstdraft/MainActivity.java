@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private long backPressedTime;
     private Toast backToast;
 
+    String baseurl;
     String cookie;
     String uid;
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
+        baseurl = sharedPreferences.getString("baseurl","");
         cookie = sharedPreferences.getString("Cookie","");
         uid = sharedPreferences.getString("uid","");
         user = sharedPreferences.getString("user","");
@@ -146,98 +148,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.signout) {
-//            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-//            startActivity(intent);
-//            logout();
-//            finish();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//    public void logout(){
-//        sharedPreferences = getSharedPreferences("Preferences",MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean("loggedin",false);
-//        System.out.println("Logged Out");
-//        editor.apply();
-//    }
-//    public void postData(RequestQueue requestQueue) {
-//        String obj = "{\n" +
-//                "    \"jsonrpc\": \"2.0\",\n" +
-//                "    \"method\": \"call\",\n" +
-//                "    \"params\": {\n" +
-//                "        \"args\": [\n" +
-//                "            [\n" +
-//                "                [\n" +
-//                "                    \"user_id\",\n" +
-//                "                    \"=\",\n" +
-//                                       uid +
-//                "                ]\n" +
-//                "            ],\n" +
-//                "            [\n" +
-//                "                \"attendance_state\",\n" +
-//                "                \"name\"\n" +
-//                "            ]\n" +
-//                "        ],\n" +
-//                "        \"model\": \"hr.employee\",\n" +
-//                "        \"method\": \"search_read\",\n" +
-//                "        \"kwargs\": {}\n" +
-//                "    },\n" +
-//                "    \"id\": 49458607\n" +
-//                "}";
-//        JSONObject object = null;
-//        try {
-//            object = new JSONObject(obj);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        String nameurl = "http://34.87.169.30/web/dataset/call_kw/hr.employee/search_read";
-//        CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                /*System.out.println(response);*/
-//                try {
-//                    JSONArray arr = response.getJSONArray("result");
-//                    JSONObject obj = arr.getJSONObject(0);
-//                    userid = obj.getString("id");
-//                    user = obj.getString("name");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                name = (TextView) findViewById(R.id.name);
-//                name.setText(user);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                System.out.println(error);
-//            }
-//        }) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Content-Type", "application/json");
-//                headers.put("Cookie",cookie);
-//                return headers;
-//            }
-//            @Override
-//            public String getBodyContentType() {
-//                return "application/json";
-//            }
-//        };
-//        requestQueue.add(customRequest);
-//    }
-
     public void postData1(RequestQueue requestQueue) {
         String obj = "{\n" +
                 "    \"jsonrpc\": \"2.0\",\n" +
@@ -274,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String projecturl = "http://34.87.169.30/web/dataset/search_read";
+        String projecturl = baseurl+"/web/dataset/search_read";
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, projecturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
