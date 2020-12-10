@@ -15,6 +15,7 @@ public class SplashActivity extends Activity {
     boolean journeyover;
     boolean journeyhomeover;
     boolean checkedout;
+    boolean expensetracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,27 +42,32 @@ public class SplashActivity extends Activity {
             journeyover = sharedPreferences.getBoolean("journeyover",true);
             journeyhomeover = sharedPreferences.getBoolean("journeyhomeover",true);
             checkedout = sharedPreferences.getBoolean("checkedout",true);
+            expensetracker = sharedPreferences.getBoolean("exptracker",true);
 
             System.out.println("Flag:"+flag1);
             System.out.println("Login:"+loggedin);
             System.out.println("Journey:"+journeyover);
             System.out.println("Journey Home:"+journeyhomeover);
             System.out.println("Checked Out:"+checkedout);
+            System.out.println("Expense Tracker"+expensetracker);
 
-            if (journeyover && loggedin && journeyhomeover && checkedout) {
+            if (journeyover && loggedin && journeyhomeover && checkedout && expensetracker) {
                 flag = 1;
             }
-            if (!journeyover && loggedin && journeyhomeover && checkedout) {
+            if (!journeyover && loggedin && journeyhomeover && checkedout && expensetracker) {
                 flag = 2;
             }
-            if(journeyover && !loggedin && journeyhomeover && checkedout){
+            if(journeyover && !loggedin && journeyhomeover && checkedout && expensetracker){
                 flag = 3;
             }
-            if (journeyover && loggedin && !journeyhomeover & checkedout) {
+            if (journeyover && loggedin && !journeyhomeover & checkedout && expensetracker) {
                 flag = 4;
             }
-            if (journeyover && loggedin && journeyhomeover & !checkedout) {
+            if (journeyover && loggedin && journeyhomeover & !checkedout && expensetracker) {
                 flag = 5;
+            }
+            if (journeyover && loggedin && journeyhomeover & checkedout && !expensetracker) {
+                flag = 6;
             }
             if (flag == 1){
                 handler.postDelayed(new Runnable() {
@@ -112,6 +118,17 @@ public class SplashActivity extends Activity {
                     @Override
                     public void run() {
                         Intent intent = new Intent(SplashActivity.this, StopAttendance.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                },2000);
+            }
+            if (flag==6){
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(SplashActivity.this, ExpenseActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

@@ -133,13 +133,44 @@ public class StopAttendance extends AppCompatActivity {
                 "    \"id\": 415817139\n" +
                 "}";
 
+        String objc = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"args\": [\n" +
+                "            [" + result + "],\n" +
+                "            {\n" +
+                "                \"check_out\": \""+ time2 +"\"}\n" +
+                "        ],\n" +
+                "        \"model\": \"hr.attendance\",\n" +
+                "        \"method\": \"write\",\n" +
+                "        \"kwargs\": {\n" +
+                "            \"context\": {\n" +
+                "                \"lang\": \"en_US\",\n" +
+                "                \"tz\": \"Asia/Calcutta\",\n" +
+                "                \"uid\": "+ uid +",\n" +
+                "                \"allowed_company_ids\": [\n" +
+                "                    1\n" +
+                "                ]\n" +
+                "            }\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 681963960\n" +
+                "}";
+
         JSONObject object = null;
         try {
-            object = new JSONObject(obj);
+            if(baseurl.equals("https://inspiresupport.odoo.com/")){
+                object = new JSONObject(objc);
+            }
+            else{
+                object = new JSONObject(obj);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String stopurl = baseurl+"/web/dataset/call_kw/hr.attendance/write";
+        String stopurl = baseurl+"web/dataset/call_kw/hr.attendance/write";
+        System.out.println(stopurl);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

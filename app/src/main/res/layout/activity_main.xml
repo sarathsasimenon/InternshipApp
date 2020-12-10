@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/what_plans"
+            android:text="@string/choose"
             android:textColor="#010625"
             android:textSize="22sp"
             android:typeface="serif"
@@ -188,11 +188,12 @@
             android:text="@string/client"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:textStyle="bold"
             android:typeface="serif"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/guideline4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.10"
+            app:layout_constraintHorizontal_bias="0.13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline3"
             app:layout_constraintVertical_bias="0.35"
@@ -217,24 +218,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />-->
-
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:text="@string/location"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:typeface="serif"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/guideline4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline3"
-            app:layout_constraintVertical_bias="0.65"
-            tools:ignore="MissingConstraints" />
 
         <Button
             android:id="@+id/btnStart"

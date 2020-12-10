@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">eAttendance Tracker</string>
     <string name="hello">Hello</string>
-    <string name="name">Administrator</string>
     <string name="choose">Choose your destination</string>
-    <string name="choose2">Choose a client and respective order id</string>
     <string name="client">Client Name:</string>
     <string name="oid">Order ID:</string>
     <string name="location">Location:</string>
@@ -13,19 +11,13 @@
     <string name="username">Enter username</string>
     <string name="password">Enter password</string>
     <string name="login">Login</string>
-    <string name="loginurl">http://34.87.62.211/web/session/authenticate/</string>
-    <string name="nameurl">http://34.87.62.211/web/dataset/call_kw/hr.employee/search_read</string>
-    <string name="projecturl">http://34.87.62.211/web/dataset/search_read</string>
-    <string name="starturl">http://34.87.62.211/web/dataset/call_kw/hr.attendance/create</string>
-    <string name="stopurl">http://34.87.62.211/web/dataset/call_kw/hr.attendance/write</string>
     <string name="tz">Asia/Kolkata</string>
     <string name="sign_out">Sign Out</string>
     <string name="pref_file_key">com.example.firstdraft.PREF_FILE_KEY</string>
     <string name="check_in">Check In</string>
     <string name="check_out">Check Out</string>
     <string name="log_attendance">Log Attendance</string>
-    <string name="whatsup">What would you like to do?</string>
-    <string name="what_plans">What would you like to do?</string>
     <string name="attendance">Attendance</string>
     <string name="destination">Travel to destination</string>
+    <string name="expenses">Record Expenses</string>
 </resources>

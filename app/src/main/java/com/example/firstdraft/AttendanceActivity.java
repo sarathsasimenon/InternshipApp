@@ -15,11 +15,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +36,14 @@ public class AttendanceActivity extends AppCompatActivity {
     long m;
     String userid;
     String user;
+    String project;
     String projectid;
+    String pid;
     String uid;
     String result;
+
+    ArrayList<String> al = new ArrayList<>();
+    ArrayList<String> al2 = new ArrayList<>();
 
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferences1;
@@ -76,11 +83,7 @@ public class AttendanceActivity extends AppCompatActivity {
                 editor.putBoolean("journeyhomeover",true);
                 editor.putBoolean("checkedout",false);
                 editor.apply();
-                try {
-                    postData(requestQueue);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                postData1(requestQueue);
             }
         });
     }
@@ -95,15 +98,156 @@ public class AttendanceActivity extends AppCompatActivity {
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df.format(currentDate);
     }
-    public void postData(RequestQueue requestQueue) throws JSONException {
+    public void postData1(final RequestQueue requestQueue) {
+        String obj = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"model\": \"project.project\",\n" +
+                "        \"domain\": [],\n" +
+                "        \"fields\": [\n" +
+                "            \"name\",\n" +
+                "            \"partner_id\",\n" +
+                "            \"color\",\n" +
+                "            \"task_count\",\n" +
+                "            \"label_tasks\",\n" +
+                "            \"alias_id\",\n" +
+                "            \"alias_name\",\n" +
+                "            \"alias_domain\",\n" +
+                "            \"is_favorite\",\n" +
+                "            \"percentage_satisfaction_project\",\n" +
+                "            \"rating_status\"\n" +
+                "        ],\n" +
+                "        \"limit\": 80,\n" +
+                "        \"sort\": \"\",\n" +
+                "        \"context\": {\n" +
+                "            \"lang\": \"en_US\",\n" +
+                "            \"tz\": false,\n" +
+                "            \"uid\": 2\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 184535202\n" +
+                "}";
+        String objc = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"model\": \"project.project\",\n" +
+                "        \"domain\": [\n" +
+                "            [\n" +
+                "                \"favorite_user_ids\",\n" +
+                "                \"in\",\n" +
+                "                2\n" +
+                "            ]\n" +
+                "        ],\n" +
+                "        \"fields\": [\n" +
+                "            \"name\",\n" +
+                "            \"partner_id\",\n" +
+                "            \"allow_timesheets\",\n" +
+                "            \"color\",\n" +
+                "            \"task_count\",\n" +
+                "            \"label_tasks\",\n" +
+                "            \"alias_id\",\n" +
+                "            \"alias_name\",\n" +
+                "            \"alias_domain\",\n" +
+                "            \"is_favorite\",\n" +
+                "            \"rating_percentage_satisfaction\",\n" +
+                "            \"rating_status\",\n" +
+                "            \"analytic_account_id\"\n" +
+                "        ],\n" +
+                "        \"limit\": 80,\n" +
+                "        \"sort\": \"\",\n" +
+                "        \"context\": {\n" +
+                "            \"lang\": \"en_US\",\n" +
+                "            \"tz\": \"Asia/Calcutta\",\n" +
+                "            \"uid\": 2,\n" +
+                "            \"allowed_company_ids\": [\n" +
+                "                1\n" +
+                "            ],\n" +
+                "            \"bin_size\": true\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 424942075\n" +
+                "}";
+        JSONObject object = null;
+        try {
+            if(baseurl.equals("https://inspiresupport.odoo.com/")){
+                object = new JSONObject(objc);
+            }
+            else{
+                object = new JSONObject(obj);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String projecturl = baseurl+"web/dataset/search_read";
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, projecturl, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                try {
+                    JSONObject obj = response.getJSONObject("result");
+                    JSONArray arr = obj.getJSONArray("records");
+                    for(int i=0;i<arr.length();i++){
+                        projectid = arr.getJSONObject(i).getString("id");
+                        project = arr.getJSONObject(i).getString("name");
+                        al.add(project);
+                        al2.add(projectid);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for(int i=0;i<al.size();i++){
+                    if(!al.get(i).equals("Attendance")){
+                        al.remove(i);
+                        al2.remove(i);
+                    }
+                }
+                System.out.println(al);
+                System.out.println(al2);
+                pid = al2.get(0);
+                postData(requestQueue);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Cookie",cookie);
+                return headers;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+        requestQueue.add(customRequest);
+    }
+
+    public void postData(RequestQueue requestQueue) {
         String obj = "{\n" +
                 "    \"jsonrpc\": \"2.0\",\n" +
                 "    \"method\": \"call\",\n" +
                 "    \"params\": {\n" +
                 "        \"args\": [\n" +
                 "            {\n" +
-                "                \"employee_id\":" + userid + ",\"check_in\":\""+ time1 +"\",\"check_out\": false,\n" +
-                "                \"hr_project_id\": \""+ 4 +"\"\n" +
+                "                \"employee_id\": " + userid +",\n" +
+                "                \"check_in\": \""+ time1 +"\",\n" +
+                "                \"check_out\": false,\n" +
+                "                \"hr_project_id\": \""+pid+"\",\n" +
+                "                \"gps_lat_check_in\": false,\n" +
+                "                \"gps_lat_check_out\": false,\n" +
+                "                \"gps_lang_check_in\": false,\n" +
+                "                \"gps_lang_check_out\": false,\n" +
+                "                \"duration_check_in\": false,\n" +
+                "                \"duration_check_out\": false,\n" +
+                "                \"dist_check_in\": false,\n" +
+                "                \"dist_check_out\": false\n" +
                 "            }\n" +
                 "        ],\n" +
                 "        \"model\": \"hr.attendance\",\n" +
@@ -112,21 +256,55 @@ public class AttendanceActivity extends AppCompatActivity {
                 "            \"context\": {\n" +
                 "                \"lang\": \"en_US\",\n" +
                 "                \"tz\": \"Asia/Kolkata\",\n" +
-                "                \"uid\": "+uid+",\n" +
-                "                \"params\": {\n" +
-                "                    \"action\": 433,\n" +
-                "                    \"model\": \"hr.attendance\",\n" +
-                "                    \"view_type\": \"form\",\n" +
-                "                    \"menu_id\": 292\n" +
-                "                },\n" +
+                "                \"uid\": " + uid + ",\n" +
                 "                \"search_default_today\": 1\n" +
                 "            }\n" +
                 "        }\n" +
                 "    },\n" +
-                "    \"id\": 313482682\n" +
+                "    \"id\": 454093796\n" +
                 "}";
-        JSONObject object = new JSONObject(obj);
-        String starturl = baseurl+"/web/dataset/call_kw/hr.attendance/create";
+
+        String objc = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"args\": [\n" +
+                "            {\n" +
+                "                \"employee_id\": " + userid +",\n" +
+                "                \"check_in\": \""+ time1 +"\",\n" +
+                "                \"check_out\": false\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"model\": \"hr.attendance\",\n" +
+                "        \"method\": \"create\",\n" +
+                "        \"kwargs\": {\n" +
+                "            \"context\": {\n" +
+                "                \"lang\": \"en_US\",\n" +
+                "                \"tz\": \"Asia/Calcutta\",\n" +
+                "                \"uid\": " + uid + ",\n" +
+                "                \"allowed_company_ids\": [\n" +
+                "                    1\n" +
+                "                ]\n" +
+                "            }\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 681963960\n" +
+                "}";
+
+        JSONObject object = null;
+        try {
+            if(baseurl.equals("https://inspiresupport.odoo.com/")){
+                object = new JSONObject(objc);
+            }
+            else{
+                object = new JSONObject(obj);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(object);
+        String starturl = baseurl+"web/dataset/call_kw/hr.attendance/create";
+        System.out.println(starturl);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

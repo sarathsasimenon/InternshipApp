@@ -90,7 +90,6 @@ public class stop_journey extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(String.valueOf(R.string.pref_file_key),MODE_PRIVATE);
         client = sharedPreferences.getString("Client","");
-        add = sharedPreferences.getString("address","");
         milli = sharedPreferences.getLong("milli", Long.parseLong("0"));
         lat1 = Double.longBitsToDouble(sharedPreferences.getLong("latitude", Double.doubleToLongBits(0)));
         longi1 = Double.longBitsToDouble(sharedPreferences.getLong("longitude", Double.doubleToLongBits(0)));
@@ -105,11 +104,9 @@ public class stop_journey extends AppCompatActivity {
 
         name = (TextView) findViewById(R.id.name);
         cl = (TextView) findViewById(R.id.cl);
-        address = (TextView) findViewById(R.id.address);
 
         name.setText(user);
         cl.setText(client);
-        address.setText(add);
 
         requestQueue = Volley.newRequestQueue(stop_journey.this);
        /* requestQueue2 = Volley.newRequestQueue(stop_journey.this);*/
@@ -143,14 +140,13 @@ public class stop_journey extends AppCompatActivity {
                     locationTrack.showSettingsAlert();
                 }
                 distance(lat1,longi1,lat2,longi2);
-
                 SharedPreferences.Editor editor = sharedPreferences1.edit();
                 editor.putBoolean("journeyover",true);
+                editor.putBoolean("exptracker",false);
                 editor.apply();
                 Toast.makeText(getApplicationContext(), "Journey recorded.", Toast.LENGTH_SHORT).show();
-                final Intent intent1 = new Intent(stop_journey.this, FirstActivity.class);
+                final Intent intent1 = new Intent(stop_journey.this, ExpenseActivity.class);
                 startActivity(intent1);
-                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right);
             }
         });
     }
@@ -282,7 +278,8 @@ public class stop_journey extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String stopurl = baseurl+"/web/dataset/call_kw/hr.attendance/write";
+        String stopurl = baseurl+"web/dataset/call_kw/hr.attendance/write";
+        System.out.println(stopurl);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, stopurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

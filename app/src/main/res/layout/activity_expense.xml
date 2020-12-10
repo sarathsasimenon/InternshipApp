@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".stop_journey">
+    tools:context=".ExpenseActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -32,6 +32,13 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.0" />
 
+        <!--<androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.45" />
+-->
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="86dp"
@@ -77,31 +84,28 @@
 
         <!--<RelativeLayout
             android:id="@+id/relativeLayout2"
-            android:layout_width="350dp"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="195dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="51dp"
-            android:alpha="0.85"
+            android:layout_marginTop="8dp"
+            android:alpha="1"
             android:background="@layout/relativelayout_custom_create"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline7"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintTop_toBottomOf="@id/choose"
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="MissingConstraints,NotSibling">
 
             <Spinner
                 android:id="@+id/dropdown"
-                android:layout_width="320dp"
+                android:layout_width="323dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
-                android:layout_marginStart="5dp"
                 android:background="@android:color/transparent"
-                android:entries="@array/clientlist"
                 android:gravity="center"
+                android:prompt="@string/choose"
                 android:spinnerMode="dropdown" />
 
             <ImageView
@@ -250,53 +254,151 @@
             app:layout_constraintVertical_bias="0.35"
             tools:ignore="MissingConstraints" />
 
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="150dp"
+        <EditText
+            android:id="@+id/meals"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_bg"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/start"
+            android:fontFamily="sans-serif"
+            android:hint="Meal Expenses"
+            android:inputType="numberDecimal"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
             android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/guideline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline3"
+            app:layout_constraintVertical_bias="0.6"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/hotel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="Hotel Expenses"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/guideline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline3"
+            app:layout_constraintVertical_bias="0.6"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints"/>
+
+        <EditText
+            android:id="@+id/fares"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="Fares Expneses"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/guideline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline3"
+            app:layout_constraintVertical_bias="0.9"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints"/>
+
+        <EditText
+            android:id="@+id/cars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="Car Expenses"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/guideline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline3"
+            app:layout_constraintVertical_bias="0.9"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/misc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:hint="Misc Expenses"
+            android:inputType="numberDecimal"
+            android:textColor="@color/white"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.14"
+            app:layout_constraintHorizontal_bias="0.15"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline4"
-            app:layout_constraintVertical_bias="0.6"
-            tools:ignore="MissingConstraints"
-            android:alpha="0.25"/>
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints"/>
+
+        <EditText
+            android:id="@+id/miscdetails"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="sans-serif"
+            android:gravity="top|left"
+            android:hint="Details of Misc Expenses"
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            android:textColorHint="#7EFFFFFF"
+            android:textSize="18sp"
+            android:typeface="serif"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/guideline5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.27"
+            app:layout_constraintHorizontal_bias="0.85"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline4"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintWidth_percent="0.4"
+            tools:ignore="MissingConstraints" />
 
         <Button
-            android:id="@+id/btnEnd"
-            android:layout_width="150dp"
+            android:id="@+id/btnExp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/end"
+            android:text="@string/expenses"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:typeface="serif"
             app:layout_constraintBottom_toBottomOf="@id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.86"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline4"
             app:layout_constraintVertical_bias="0.6"
             tools:ignore="MissingConstraints" />
-
-        <!--<fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="330dp"
-            android:layout_height="195dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -110,7 +110,7 @@
 
         <Button
             android:id="@+id/attend"
-            android:layout_width="235dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"
@@ -128,7 +128,7 @@
 
         <Button
             android:id="@+id/destination"
-            android:layout_width="235dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg"
             android:fontFamily="sans-serif-medium"

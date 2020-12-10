@@ -163,11 +163,12 @@ public class FirstActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String nameurl = baseurl+"/web/dataset/call_kw/hr.employee/search_read";
+        String nameurl = baseurl+"web/dataset/call_kw/hr.employee/search_read";
+        System.out.println(object);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, nameurl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /*System.out.println(response);*/
+                System.out.println(response);
                 try {
                     JSONArray arr = response.getJSONArray("result");
                     JSONObject obj = arr.getJSONObject(0);

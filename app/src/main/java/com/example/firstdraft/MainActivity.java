@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue1 = Volley.newRequestQueue(MainActivity.this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        al.add("What would you like to do?");
+        al.add("Choose your destination");
         al2.add("Project ids");
         postData1(requestQueue1);
 
@@ -178,17 +178,65 @@ public class MainActivity extends AppCompatActivity {
                 "    },\n" +
                 "    \"id\": 184535202\n" +
                 "}";
+        String objc = "{\n" +
+                "    \"jsonrpc\": \"2.0\",\n" +
+                "    \"method\": \"call\",\n" +
+                "    \"params\": {\n" +
+                "        \"model\": \"project.project\",\n" +
+                "        \"domain\": [\n" +
+                "            [\n" +
+                "                \"favorite_user_ids\",\n" +
+                "                \"in\",\n" +
+                "                2\n" +
+                "            ]\n" +
+                "        ],\n" +
+                "        \"fields\": [\n" +
+                "            \"name\",\n" +
+                "            \"partner_id\",\n" +
+                "            \"allow_timesheets\",\n" +
+                "            \"color\",\n" +
+                "            \"task_count\",\n" +
+                "            \"label_tasks\",\n" +
+                "            \"alias_id\",\n" +
+                "            \"alias_name\",\n" +
+                "            \"alias_domain\",\n" +
+                "            \"is_favorite\",\n" +
+                "            \"rating_percentage_satisfaction\",\n" +
+                "            \"rating_status\",\n" +
+                "            \"analytic_account_id\"\n" +
+                "        ],\n" +
+                "        \"limit\": 80,\n" +
+                "        \"sort\": \"\",\n" +
+                "        \"context\": {\n" +
+                "            \"lang\": \"en_US\",\n" +
+                "            \"tz\": \"Asia/Calcutta\",\n" +
+                "            \"uid\": 2,\n" +
+                "            \"allowed_company_ids\": [\n" +
+                "                1\n" +
+                "            ],\n" +
+                "            \"bin_size\": true\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"id\": 424942075\n" +
+                "}";
         JSONObject object = null;
         try {
-            object = new JSONObject(obj);
+            if(baseurl.equals("https://inspiresupport.odoo.com/")){
+                object = new JSONObject(objc);
+            }
+            else{
+                object = new JSONObject(obj);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String projecturl = baseurl+"/web/dataset/search_read";
+        System.out.println(object);
+        String projecturl = baseurl+"web/dataset/search_read";
+        System.out.println(projecturl);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, projecturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /*System.out.println(response);*/
+                System.out.println(response);
                 try {
                     JSONObject obj = response.getJSONObject("result");
                     JSONArray arr = obj.getJSONArray("records");
@@ -201,8 +249,16 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                al.remove("Attendance");
-                al2.remove("4");
+                for(int i=0;i<al.size();i++){
+                    if(al.get(i).equals("Attendance")){
+                        al.remove(i);
+                        al2.remove(i);
+                    }
+                }
+                System.out.println(al);
+                System.out.println(al2);
+                /*al.remove("Attendance");
+                al2.remove("4");*/
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, al);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dropdown.setAdapter(adapter);

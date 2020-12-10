@@ -117,11 +117,9 @@ public class item_select extends AppCompatActivity {
 
         TextView name = (TextView) findViewById(R.id.name);
         TextView cl = (TextView) findViewById(R.id.cl);
-        final TextView address = (TextView) findViewById(R.id.address);
 
         name.setText(user);
         cl.setText(client);
-        address.setText(add);
 
         btnStart = (Button) this.findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -199,12 +197,13 @@ public class item_select extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        System.out.println(object);
-        String starturl = baseurl+"/web/dataset/call_kw/hr.attendance/create";
+        System.out.println(object);
+        String starturl = baseurl+"web/dataset/call_kw/hr.attendance/create";
+        System.out.println(starturl);
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, starturl, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                /*System.out.println(response);*/
+                System.out.println(response);
                 try {
                     result = response.getString("result");
                 } catch (JSONException e) {

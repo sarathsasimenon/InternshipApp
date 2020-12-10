@@ -30,6 +30,7 @@
         android:roundIcon="@mipmap/logo1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ExpenseActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -46,11 +47,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".FirstActivity"/>
+        <activity android:name=".FirstActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:parentActivityName=".FirstActivity"/>
+            android:parentActivityName=".FirstActivity" />
         <activity
             android:name=".AttendanceActivity"
             android:exported="true"

@@ -51,8 +51,10 @@ public class LoginActivity extends AppCompatActivity {
     private Spinner dropdown;
     JSONArray details;
     String database;
+    String alias;
     JSONObject credentials;
     String baseurl;
+    JSONObject json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
         details = new JSONArray();
         final ArrayList<String> al = new ArrayList<String>();
+        json = new JSONObject();
         String url = "https://qq7q2qo5y1dlxxc-vinothocidb.adb.ap-mumbai-1.oraclecloudapps.com/ords/xxtest/sarath/";
         JsonObjectRequest jor = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -98,7 +101,9 @@ public class LoginActivity extends AppCompatActivity {
         try{
             for(int i=0;i<details.length();i++){
                 String db = details.getJSONObject(i).getString("data_base");
-                al.add(db);
+                String an = details.getJSONObject(i).getString("alias_name");
+                al.add(an);
+                json.put(an,db);
             }
         }
         catch (JSONException e) {
@@ -115,7 +120,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (parent.getItemAtPosition(position).equals(al.get(0))) {
                         // do nothing
                     } else {
-                        database = parent.getItemAtPosition(position).toString();
+                        alias = parent.getItemAtPosition(position).toString();
+                        try {
+                            database = json.getString(alias);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -131,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                 credentials = new JSONObject();
                 try{
                     for(int i=0;i<details.length();i++){
-                        if(details.getJSONObject(i).getString("data_base").equals(database)){
+                        if(details.getJSONObject(i).getString("alias_name").equals(alias)){
                             credentials.put("url",details.getJSONObject(i).getString("url"));
                             credentials.put("user name",details.getJSONObject(i).getString("user_name"));
                             credentials.put("password",details.getJSONObject(i).getString("password"));
@@ -166,11 +176,17 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = baseurl+"/web/session/authenticate/";
+        String url = baseurl+"web/session/authenticate/";
+        System.out.println(database);
+        System.out.println(u);
+        System.out.println(p);
+        System.out.println(object);
+        System.out.println(url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        System.out.println(response);
                         JSONArray key = response.names();
                         String k = null;
                         try {
